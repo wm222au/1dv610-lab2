@@ -14,7 +14,7 @@ class RegisterView extends View
     private static $minUsernameLength = 3;
     private static $minPasswordLength = 6;
 
-    private $model = array();
+    private $model;
     private $user;
 
     public function __construct(\Model\User $toBeViewed)
@@ -22,8 +22,9 @@ class RegisterView extends View
         $this->user = $toBeViewed;
     }
 
-    public function toHTML()
+    public function toHTML(array $data)
     {
+        $this->model = $data['model'];
         return $this->response();
     }
 
@@ -40,15 +41,15 @@ class RegisterView extends View
 
         $response = '<a href="./">Back to login</a>';
 
-        // if ($this->model->usernameTooShort) {
-        //     $response .= $this->generateUsernameTooShort();
-        // }
-        // if ($this->model->passwordTooShort) {
-        //     $response .= $this->generatePasswordTooShort();
-        // }
-        // if ($this->model->passwordNotEqual) {
-        //     $response .= $this->generatePasswordNotEqual();
-        // }
+        if ($this->model->usernameTooShort) {
+            $response .= $this->generateUsernameTooShort();
+        }
+        if ($this->model->passwordTooShort) {
+            $response .= $this->generatePasswordTooShort();
+        }
+        if ($this->model->passwordNotEqual) {
+            $response .= $this->generatePasswordNotEqual();
+        }
 
         $response .= $this->generateRegisterFormHTML($message);
 

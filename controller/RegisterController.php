@@ -13,7 +13,10 @@ class RegisterController
         $this->user = $user;
         $this->view = new \View\RegisterView($this->user);
 
-        $this->model = (object) ['usernameTooShort' => false, 'passwordTooShort' => false, 'passwordNotEqual' => false];
+        $this->model = (object)
+            ['usernameTooShort' => false,
+            'passwordTooShort' => false,
+            'passwordNotEqual' => false];
     }
 
     public function index()
@@ -28,7 +31,7 @@ class RegisterController
     public function registerAccount($user, $pw, $pwr)
     {
         if (strlen($user) < 3) {
-            $$this->model->usernameTooShort = true;
+            $this->model->usernameTooShort = true;
         }
         if (strlen($pw) < 6) {
             $this->model->passwordTooShort = true;
@@ -36,11 +39,11 @@ class RegisterController
         if ($pw != $pwr) {
             $this->model->passwordNotEqual = true;
         }
-        return $this->view->toHTML(null);
+        return $this->view->toHTML(array("model" => $this->model));
     }
 
     public function showForm()
     {
-        return $this->view->toHTML(null);
+        return $this->view->toHTML(array("model" => $this->model));
     }
 }

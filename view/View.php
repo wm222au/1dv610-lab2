@@ -4,8 +4,8 @@ namespace View;
 
 class View
 {
-    public function toHTML(object $data = null)
+    public function toHTML(array $data)
     {
-        return '404 - page not found';
+        return '404 - page not found.';
     }
 }

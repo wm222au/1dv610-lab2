@@ -20,7 +20,7 @@ class LoginView extends View
         $this->user = $toBeViewed;
     }
 
-    public function toHTML()
+    public function toHTML(array $data)
     {
         return $this->response();
     }

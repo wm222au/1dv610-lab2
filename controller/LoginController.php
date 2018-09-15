@@ -20,6 +20,6 @@ class LoginController extends Controller
 
     private function showForm(): string
     {
-        return $this->view->toHTML(null);
+        return $this->view->toHTML(array());
     }
 }

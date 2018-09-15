@@ -16,7 +16,7 @@ class LayoutView
         $this->dayTimeView = new DateTimeView();
     }
 
-    public function render($view)
+    public function render($isLoggedIn, $view)
     {
         echo '<!DOCTYPE html>
       <html>

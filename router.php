@@ -32,6 +32,6 @@ class Router
             $this->contentView = new \Controller\LoginController($user);
         }
 
-        $this->layoutView->render($this->contentView->index());
+        $this->layoutView->render($user->isUserLoggedIn(), $this->contentView->index());
     }
 }
