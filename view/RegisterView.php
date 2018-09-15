@@ -22,9 +22,9 @@ class RegisterView extends View
         $this->user = $toBeViewed;
     }
 
-    public function toHTML(array $data)
+    public function toHTML($model): string
     {
-        $this->model = $data['model'];
+        // $this->model = $data['model'];
         return $this->response();
     }
 

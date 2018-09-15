@@ -2,10 +2,7 @@
 
 namespace View;
 
-class View
+abstract class View
 {
-    public function toHTML(array $data)
-    {
-        return '404 - page not found.';
-    }
+    abstract public function toHTML($model): string;
 }

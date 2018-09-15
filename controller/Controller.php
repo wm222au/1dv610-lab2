@@ -2,14 +2,7 @@
 
 namespace Controller;
 
-class Controller
+abstract class Controller
 {
-    public function index(): string
-    {
-        if (isset($this->view)) {
-            return $this->view->toHTML();
-        } else {
-            return "Not implemented yet.";
-        }
-    }
+    abstract public function index(): string;
 }
