@@ -22,8 +22,10 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 // My Code
-$db = new MySQL_Instance($_ENV['db_serverhost'], $_ENV['db_database'], $_ENV['db_username'], $_ENV['db_password']);
-$db->connect();
+// $db = new MySQL_Instance($_ENV['db_serverhost'], $_ENV['db_database'], $_ENV['db_username'], $_ENV['db_password']);
+// $db->connect();
+
+$db = new mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
 
 $storage = new \Model\SessionStorage('User');
 $user = $storage->loadEntry();
