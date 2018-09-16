@@ -33,7 +33,7 @@ class LoginView extends View
      * @return  void BUT writes to standard output and cookies!
      */
 
-    private function response()
+    protected function response(): string
     {
         $message = '';
 

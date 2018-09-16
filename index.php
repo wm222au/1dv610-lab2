@@ -1,6 +1,8 @@
 <?php
 
 //INCLUDE THE FILES NEEDED...
+require_once 'env.php';
+
 require_once 'view/View.php';
 require_once 'view/LayoutView.php';
 require_once 'view/LoginView.php';
@@ -20,6 +22,9 @@ error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
 // My Code
+$db = new MySQL_Instance($_ENV['db_serverhost'], $_ENV['db_database'], $_ENV['db_username'], $_ENV['db_password']);
+$db->connect();
+
 $storage = new \Model\SessionStorage('User');
 $user = $storage->loadEntry();
 

@@ -23,12 +23,14 @@ class RegisterView extends View
     public function toHTML($model, string $message): string
     {
         $html = '<a href="./">Back to login</a>';
-        $html .= $this->generateRegisterFormHTML($message);
 
         if ($model) {
             $this->model = $model;
-            $html .= $this->response();
+            $message .= $this->response();
         }
+
+        $html .= $this->generateRegisterFormHTML($message);
+
         return $html;
     }
 
@@ -39,7 +41,7 @@ class RegisterView extends View
      *
      * @return  void BUT writes to standard output and cookies!
      */
-    public function response()
+    protected function response(): string
     {
         $response = '';
 
