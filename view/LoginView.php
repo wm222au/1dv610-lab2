@@ -20,7 +20,7 @@ class LoginView extends View
         $this->user = $toBeViewed;
     }
 
-    public function toHTML($model): string
+    public function toHTML($model, string $message): string
     {
         return $this->response();
     }

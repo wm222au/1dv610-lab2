@@ -11,8 +11,6 @@ class RegisterView extends View
     private static $cookieName = 'RegisterView::CookieName';
     private static $cookiePassword = 'RegisterView::CookiePassword';
     private static $messageId = 'RegisterView::Message';
-    private static $minUsernameLength = 3;
-    private static $minPasswordLength = 6;
 
     private $model;
     private $user;
@@ -22,10 +20,16 @@ class RegisterView extends View
         $this->user = $toBeViewed;
     }
 
-    public function toHTML($model): string
+    public function toHTML($model, string $message): string
     {
-        // $this->model = $data['model'];
-        return $this->response();
+        $html = '<a href="./">Back to login</a>';
+        $html .= $this->generateRegisterFormHTML($message);
+
+        if ($model) {
+            $this->model = $model;
+            $html .= $this->response();
+        }
+        return $html;
     }
 
     /**
@@ -37,33 +41,29 @@ class RegisterView extends View
      */
     public function response()
     {
-        $message = '';
+        $response = '';
 
-        $response = '<a href="./">Back to login</a>';
-
-        if ($this->model->usernameTooShort) {
+        if (!$this->model->isUsernameValid()) {
             $response .= $this->generateUsernameTooShort();
         }
-        if ($this->model->passwordTooShort) {
+        if (!$this->model->isPasswordLengthOk()) {
             $response .= $this->generatePasswordTooShort();
         }
-        if ($this->model->passwordNotEqual) {
+        if (!$this->model->isPasswordEqual()) {
             $response .= $this->generatePasswordNotEqual();
         }
-
-        $response .= $this->generateRegisterFormHTML($message);
 
         return $response;
     }
 
     private function generateUsernameTooShort()
     {
-        return '<p>Username has too few characters, at least ' . self::$minUsernameLength . ' characters.</p>';
+        return '<p>Username has too few characters, at least ' . $this->model->minUsernameLength . ' characters.</p>';
     }
 
     private function generatePasswordTooShort()
     {
-        return '<p>Password has too few characters, at least ' . self::$minPasswordLength . ' characters.</p>';
+        return '<p>Password has too few characters, at least ' . $this->model->minPasswordLength . ' characters.</p>';
     }
 
     private function generatePasswordNotEqual()

@@ -8,8 +8,10 @@ class Register
     private $password;
     private $repeatedPassword;
 
-    private $minUsernameLength = 3;
-    private $minPasswordLength = 6;
+    private $isRegistered;
+
+    public $minUsernameLength = 3;
+    public $minPasswordLength = 6;
 
     public function __construct($username, $password, $repeatedPassword)
     {
@@ -40,15 +42,21 @@ class Register
 
     public function isUsernameValid(): bool
     {
-        return (strlen($this->username) < $this->minUsernameLength);
+        return (strlen($this->username) >= $this->minUsernameLength);
     }
 
     public function isPasswordValid(): bool
     {
-        if ($this->password != $this->repeatedPassword || strlen($this->password) < $this->minPasswordLength) {
-            return false;
-        }
+        return ($this->isPasswordEqual() && $this->isPasswordLengthOk());
+    }
 
-        return true;
+    public function isPasswordEqual(): bool
+    {
+        return ($this->password == $this->repeatedPassword);
+    }
+
+    public function isPasswordLengthOk(): bool
+    {
+        return (strlen($this->password) >= $this->minPasswordLength);
     }
 }

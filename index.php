@@ -8,6 +8,7 @@ require_once 'view/RegisterView.php';
 require_once 'controller/Controller.php';
 require_once 'controller/LoginController.php';
 require_once 'controller/RegisterController.php';
+require_once 'model/Register.php';
 require_once 'model/User.php';
 require_once 'model/SessionStorage.php';
 
