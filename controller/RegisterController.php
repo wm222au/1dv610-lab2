@@ -7,10 +7,10 @@ class RegisterController
     private $view;
     private $user;
 
-    public function __construct(\Model\User $user)
+    public function __construct()
     {
-        $this->user = $user;
-        $this->view = new \View\RegisterView($this->user);
+        // $this->user = $user;
+        $this->view = new \View\RegisterView();
     }
 
     public function index()
@@ -24,12 +24,12 @@ class RegisterController
 
     public function registerAccount($username, $password, $repeatedPassword)
     {
-        $model = new \Model\Register($username, $password, $repeatedPassword);
         $message = '';
-        if ($model->isRegistrationValid()) {
-            $user = new \Model\User();
+        $user = new \Model\User($username, $password);
+        $model = new \Model\Register($user, $repeatedPassword);
+        if ($model->getPasswordsEqual()) {
             try {
-                if ($user->registerToDatabase($username, $password)) {
+                if ($user->registerToDatabase()) {
                     $message .= 'Registered new user.';
                 } else {
                     $message .= 'User exists, pick another username.';

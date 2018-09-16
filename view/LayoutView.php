@@ -7,12 +7,12 @@ require_once 'DateTimeView.php';
 class LayoutView
 {
 
-    private $user;
+    // private $user;
     private $dayTimeView;
 
-    public function __construct(\Model\User $user)
+    public function __construct()
     {
-        $this->user = $user;
+        // $this->user = $user;
         $this->dayTimeView = new DateTimeView();
     }
 

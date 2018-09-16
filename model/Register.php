@@ -4,59 +4,45 @@ namespace Model;
 
 class Register
 {
-    private $username;
-    private $password;
-    private $repeatedPassword;
+    private $usernameLengthValid = false;
+    private $passwordLengthValid = false;
+    private $passwordsEqual = false;
 
-    private $isRegistered;
+    private $minUsernameLength;
+    private $minPasswordLength;
 
-    public $minUsernameLength = 3;
-    public $minPasswordLength = 6;
-
-    public function __construct($username, $password, $repeatedPassword)
+    public function __construct(\Model\User $user, $repeatedPassword)
     {
-        $this->username = $username;
-        $this->password = $password;
-        $this->repeatedPassword = $repeatedPassword;
+        $this->usernameLengthValid = $user->isUsernameValid();
+        $this->passwordLengthValid = $user->isPasswordValid();
+        $this->passwordsEqual = $user->getPassword() == $repeatedPassword;
+
+        $this->minUsernameLength = $user::$minUsernameLength;
+        $this->minPasswordLength = $user::$minPasswordLength;
     }
 
-    public function getUsername()
+    public function getUsernameLengthValid(): bool
     {
-        return $this->username;
+        return $this->usernameLengthValid;
     }
 
-    public function getPassword()
+    public function getPasswordLengthValid(): bool
     {
-        return $this->password;
+        return $this->passwordLengthValid;
     }
 
-    public function getRepeatedPassword()
+    public function getPasswordsEqual(): bool
     {
-        return $this->repeatedPassword;
+        return $this->passwordsEqual;
     }
 
-    public function isRegistrationValid(): bool
+    public function getMinUsernameLength(): int
     {
-        return ($this->isUsernameValid() && $this->isPasswordValid());
+        return $this->minUsernameLength;
     }
 
-    public function isUsernameValid(): bool
+    public function getMinPasswordLength(): int
     {
-        return (strlen($this->username) >= $this->minUsernameLength);
-    }
-
-    public function isPasswordValid(): bool
-    {
-        return ($this->isPasswordEqual() && $this->isPasswordLengthOk());
-    }
-
-    public function isPasswordEqual(): bool
-    {
-        return ($this->password == $this->repeatedPassword);
-    }
-
-    public function isPasswordLengthOk(): bool
-    {
-        return (strlen($this->password) >= $this->minPasswordLength);
+        return $this->minPasswordLength;
     }
 }

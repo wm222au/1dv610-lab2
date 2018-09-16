@@ -7,10 +7,10 @@ class LoginController extends Controller
     private $user;
     private $view;
 
-    public function __construct(\Model\User $user)
+    public function __construct()
     {
-        $this->user = $user;
-        $this->view = new \View\LoginView($this->user);
+        // $this->user = $user;
+        $this->view = new \View\LoginView();
     }
 
     public function index(): string

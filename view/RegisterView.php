@@ -15,9 +15,9 @@ class RegisterView extends View
     private $model;
     private $user;
 
-    public function __construct(\Model\User $toBeViewed)
+    public function __construct()
     {
-        $this->user = $toBeViewed;
+        // $this->user = $toBeViewed;
     }
 
     public function toHTML($model, string $message): string
@@ -45,13 +45,13 @@ class RegisterView extends View
     {
         $response = '';
 
-        if (!$this->model->isUsernameValid()) {
+        if (!$this->model->getUsernameLengthValid()) {
             $response .= $this->generateUsernameTooShort();
         }
-        if (!$this->model->isPasswordLengthOk()) {
+        if (!$this->model->getPasswordLengthValid()) {
             $response .= $this->generatePasswordTooShort();
         }
-        if (!$this->model->isPasswordEqual()) {
+        if (!$this->model->getPasswordsEqual()) {
             $response .= $this->generatePasswordNotEqual();
         }
 
@@ -60,12 +60,12 @@ class RegisterView extends View
 
     private function generateUsernameTooShort()
     {
-        return '<p>Username has too few characters, at least ' . $this->model->minUsernameLength . ' characters.</p>';
+        return '<p>Username has too few characters, at least ' . $this->model->getMinUsernameLength() . ' characters.</p>';
     }
 
     private function generatePasswordTooShort()
     {
-        return '<p>Password has too few characters, at least ' . $this->model->minPasswordLength . ' characters.</p>';
+        return '<p>Password has too few characters, at least ' . $this->model->getMinPasswordLength() . ' characters.</p>';
     }
 
     private function generatePasswordNotEqual()

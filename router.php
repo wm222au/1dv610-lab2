@@ -16,12 +16,12 @@ class Router
     {
         $this->layoutView = $layoutView;
     }
-    public function route($user)
+    public function route()
     {
         if (!empty($_GET)) {
             if (isset($_GET['register'])) {
                 // reg form
-                $this->contentView = new \Controller\RegisterController($user);
+                $this->contentView = new \Controller\RegisterController();
             } else if (isset($_GET['account'])) {
                 // show account
             } else if (isset($_GET['logout'])) {
@@ -29,9 +29,9 @@ class Router
             }
         } else {
             // $this->loginController->index();
-            $this->contentView = new \Controller\LoginController($user);
+            $this->contentView = new \Controller\LoginController();
         }
 
-        $this->layoutView->render($user->isUserLoggedIn(), $this->contentView->index());
+        $this->layoutView->render(false, $this->contentView->index());
     }
 }

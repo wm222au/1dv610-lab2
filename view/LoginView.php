@@ -15,9 +15,9 @@ class LoginView extends View
     private static $keep = 'LoginView::KeepMeLoggedIn';
     private static $messageId = 'LoginView::Message';
 
-    public function __construct(\Model\User $toBeViewed)
+    public function __construct()
     {
-        $this->user = $toBeViewed;
+        // $this->user = $toBeViewed;
     }
 
     public function toHTML($model, string $message): string

@@ -27,10 +27,10 @@ ini_set('display_errors', 'On');
 
 $db = new mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
 
-$storage = new \Model\SessionStorage('User');
-$user = $storage->loadEntry();
+// $storage = new \Model\SessionStorage('User');
+// $user = $storage->loadEntry();
 
-$router = new Router(new \View\LayoutView($user));
-$router->route($user);
+$router = new Router(new \View\LayoutView());
+$router->route();
 
-$storage->saveEntry($user);
+// $storage->saveEntry($user);
