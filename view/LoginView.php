@@ -5,6 +5,7 @@ namespace View;
 class LoginView extends View
 {
     private $user;
+    private $model;
 
     private static $login = 'LoginView::Login';
     private static $logout = 'LoginView::Logout';
@@ -20,9 +21,41 @@ class LoginView extends View
         // $this->user = $toBeViewed;
     }
 
-    public function toHTML($model, string $message): string
+    public function userHasLoggedIn(): bool
     {
-        return $this->response();
+        return ($this->getUsername() !== null && $this->getPassword() !== null);
+    }
+
+    public function getLogin(): \Model\Login
+    {
+        $user = new \Model\User($this->getUsername(), $this->getPassword());
+        $login = new \Model\Login($user);
+        return $login;
+    }
+
+    public function getUsername()
+    {
+        return $_POST[self::$name];
+    }
+    public function getPassword()
+    {
+        return $_POST[self::$password];
+    }
+
+    public function toHTML($model): string
+    {
+        $this->model = $model;
+        $html = '<a href="?register">Register a new user.</a>';
+        $message = '';
+
+        if ($this->model) {
+            $message .= $this->response();
+        }
+
+        $html .= $this->generateLoginFormHTML($message);
+
+        return $html;
+
     }
 
     /**
@@ -35,12 +68,32 @@ class LoginView extends View
 
     protected function response(): string
     {
-        $message = '';
+        $response = '';
 
-        $response = '<a href="?register">Register account</a>';
-        $response .= $this->generateLoginFormHTML($message);
-        //$response .= $this->generateLogoutButtonHTML($message);
+        if ($this->model->getIsUsernameEmpty()) {
+            $response .= $this->generateUsernameIsEmptyHTML();
+        } else if ($this->model->getIsPasswordEmpty()) {
+            $response .= $this->generatePasswordIsEmptyHTML();
+        } else if (!$this->model->getIsAuthenticated()) {
+            $response .= $this->generateWrongCredentialsHTML();
+        }
+
         return $response;
+    }
+
+    private function generateUsernameIsEmptyHTML()
+    {
+        return '<p>Username is missing</p>';
+    }
+
+    private function generatePasswordIsEmptyHTML()
+    {
+        return '<p>Password is missing</p>';
+    }
+
+    private function generateWrongCredentialsHTML()
+    {
+        return '<p>Wrong name or password</p>';
     }
 
     /**

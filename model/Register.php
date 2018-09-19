@@ -4,15 +4,21 @@ namespace Model;
 
 class Register
 {
+    private $user;
+
     private $usernameLengthValid = false;
     private $passwordLengthValid = false;
     private $passwordsEqual = false;
+    private $userExists = false;
+    private $userRegistration = false;
 
     private $minUsernameLength;
     private $minPasswordLength;
 
     public function __construct(\Model\User $user, $repeatedPassword)
     {
+        $this->user = $user;
+
         $this->usernameLengthValid = $user->isUsernameValid();
         $this->passwordLengthValid = $user->isPasswordValid();
         $this->passwordsEqual = $user->getPassword() == $repeatedPassword;
@@ -44,5 +50,40 @@ class Register
     public function getMinPasswordLength(): int
     {
         return $this->minPasswordLength;
+    }
+
+    private function setUserExists(bool $exists): bool
+    {
+        return $this->userExists = $exists;
+    }
+
+    public function getUserExists(): bool
+    {
+        return $this->userExists;
+    }
+
+    private function setUserRegistration(bool $isReg): bool
+    {
+        return $this->userRegistration = $isReg;
+    }
+
+    public function getUserRegistration(): bool
+    {
+        return $this->userRegistration;
+    }
+
+    public function registerUser()
+    {
+        if ($this->getPasswordsEqual()) {
+            try {
+                if ($this->user->registerUserToDatabase()) {
+                    $this->setUserRegistration(true);
+                } else {
+                    $this->setUserExists(true);
+                }
+            } catch (Exception $error) {
+                $this->setUserRegistration(false);
+            }
+        }
     }
 }

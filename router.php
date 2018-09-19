@@ -12,9 +12,12 @@ class Router
     private $layoutView;
     private $contentView;
 
+    private $user;
+
     public function __construct($layoutView)
     {
         $this->layoutView = $layoutView;
+        $this->user = new \Model\User();
     }
     public function route()
     {
@@ -32,6 +35,6 @@ class Router
             $this->contentView = new \Controller\LoginController();
         }
 
-        $this->layoutView->render(false, $this->contentView->index());
+        $this->layoutView->render($this->user->getUser(), $this->contentView->index());
     }
 }

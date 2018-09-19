@@ -6,28 +6,29 @@ session_start();
 
 class SessionStorage
 {
-    private static $SESSION_KEY = "1dv610lab2";
     private $modelType;
+    private $sessionKey;
 
-    public function __construct($modelType)
+    public function __construct($modelType, string $key)
     {
         $this->modelType = 'Model\\' . $modelType;
+        $this->sessionKey = $key;
     }
 
     private function getSessionKey(): string
     {
-        return self::$SESSION_KEY;
+        return $this->key;
     }
 
     public function exists(): bool
     {
-        return isset($_SESSION[self::$SESSION_KEY]);
+        return isset($_SESSION[$this->key]);
     }
 
     public function loadEntry()
     {
-        if (isset($_SESSION[self::$SESSION_KEY])) {
-            return $_SESSION[self::$SESSION_KEY];
+        if ($this->exists()) {
+            return $_SESSION[$this->key];
         } else {
             return new $this->modelType();
         }
@@ -35,11 +36,11 @@ class SessionStorage
 
     public function saveEntry(User $toBeSaved)
     {
-        $_SESSION[self::$SESSION_KEY] = $toBeSaved;
+        $_SESSION[$this->key] = $toBeSaved;
     }
 
     public function deleteEntry()
     {
-        unset($_SESSION[self::$SESSION_KEY]);
+        unset($_SESSION[$this->key]);
     }
 }

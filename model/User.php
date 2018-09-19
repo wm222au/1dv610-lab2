@@ -2,10 +2,14 @@
 
 namespace Model;
 
+use Exception;
+
 class User
 {
     private $username;
     private $password;
+
+    private $storage;
 
     private static $hashOptions = ['cost' => 12];
 
@@ -16,6 +20,18 @@ class User
     {
         $this->username = $username;
         $this->password = $password;
+
+        $this->storage = new \Model\SessionStorage('User', 'user');
+    }
+
+    public function getIsLoggedIn(): bool
+    {
+        return $this->storage->exists();
+    }
+
+    public function getUser(): \Model\User
+    {
+        return $this->storage->loadEntry();
     }
 
     public function getUsername(): string
@@ -39,12 +55,21 @@ class User
 
     private function setPassword($password)
     {
-        if ($this->isPasswordLengthValid($password)) {
+        if ($this->isPasswordValid($password)) {
             $this->password = $password;
-            $this->isPasswordVerified = true;
         } else {
             throw new Exception("Password didn't fulfill conditions.");
         }
+    }
+
+    public function isUsernameEmpty(): bool
+    {
+        return empty($this->username);
+    }
+
+    public function isPasswordEmpty(): bool
+    {
+        return empty($this->password);
     }
 
     public function isUsernameValid(): bool
@@ -62,7 +87,7 @@ class User
         return password_hash($clearTextPassword, PASSWORD_BCRYPT, SELF::$hashOptions);
     }
 
-    public function registerToDatabase(): bool
+    public function registerUserToDatabase(): bool
     {
         if (!$this->isUsernameValid() || !$this->isPasswordValid()) {
             throw new Exception('User credentials is not valid.');
@@ -77,19 +102,23 @@ class User
         return $db->query($queryString);
     }
 
-    public function loginWithPassword(): bool
+    public function loginUser(): bool
     {
         global $db;
 
-        $queryString = "SELECT * FROM Users WHERE username = $_username LIMIT 1";
+        $queryString = "SELECT * FROM Users WHERE username = '" . $this->username . "' LIMIT 1";
         $result = $db->query($queryString);
 
-        if ($result && $result->num_rows > 0) {
-            $user = mysql_fetch_assoc($result);
+        var_dump($queryString, $result);
 
-            if (password_verify($_password, $user['password'])) {
+        if ($result && $result->num_rows > 0) {
+            $user = $result->fetch_assoc();
+            var_dump($user);
+
+            if (password_verify($this->password, $user['password'])) {
                 $this->setUsername($user['username']);
                 $this->setPassword($user['password']);
+                $this->storage->saveEntry($this);
             } else {
                 throw new Exception('Password did not match.');
             }
@@ -98,6 +127,30 @@ class User
         } else {
             return false;
         }
+    }
+
+    public function logoutUser(): bool
+    {
+        // global $db;
+
+        // $queryString = "SELECT * FROM Users WHERE username = $this->username LIMIT 1";
+        // $result = $db->query($queryString);
+
+        // if ($result && $result->num_rows > 0) {
+        //     $user = mysql_fetch_assoc($result);
+
+        //     if (password_verify($this->password, $user['password'])) {
+        //         $this->setUsername($user['username']);
+        //         $this->setPassword($user['password']);
+        //     } else {
+        //         throw new Exception('Password did not match.');
+        //     }
+
+        //     return true;
+        // } else {
+        //     return false;
+        // }
+        $this->storage->saveEntry($this);
     }
 
     public function isUserLoggedIn(): bool

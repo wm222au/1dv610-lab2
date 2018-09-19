@@ -20,12 +20,38 @@ class RegisterView extends View
         // $this->user = $toBeViewed;
     }
 
-    public function toHTML($model, string $message): string
+    public function userHasRegistered(): bool
     {
-        $html = '<a href="./">Back to login</a>';
+        return ($this->getUsername() !== null && $this->getPassword() !== null && $this->getPasswordRepeat() !== null);
+    }
 
-        if ($model) {
-            $this->model = $model;
+    public function getRegistration(): \Model\Register
+    {
+        $user = new \Model\User($this->getUsername(), $this->getPassword());
+        $register = new \Model\Register($user, $this->getPasswordRepeat());
+        return $register;
+    }
+
+    public function getUsername()
+    {
+        return $_POST[self::$name];
+    }
+    public function getPassword()
+    {
+        return $_POST[self::$password];
+    }
+    public function getPasswordRepeat()
+    {
+        return $_POST[self::$passwordRepeat];
+    }
+
+    public function toHTML($model): string
+    {
+        $this->model = $model;
+        $html = '<a href="./">Back to login.</a>';
+        $message = '';
+
+        if ($this->model) {
             $message .= $this->response();
         }
 
@@ -45,32 +71,48 @@ class RegisterView extends View
     {
         $response = '';
 
-        if (!$this->model->getUsernameLengthValid()) {
-            $response .= $this->generateUsernameTooShort();
-        }
-        if (!$this->model->getPasswordLengthValid()) {
-            $response .= $this->generatePasswordTooShort();
-        }
-        if (!$this->model->getPasswordsEqual()) {
-            $response .= $this->generatePasswordNotEqual();
+        if ($this->model->getUserRegistration()) {
+            $response .= $this->generateUserRegistered();
+        } else if ($this->model->getUserExists()) {
+            $response .= $this->generateUserExists();
+        } else {
+            if (!$this->model->getUsernameLengthValid()) {
+                $response .= $this->generateUsernameTooShort();
+            }
+            if (!$this->model->getPasswordLengthValid()) {
+                $response .= $this->generatePasswordTooShort();
+            }
+            if (!$this->model->getPasswordsEqual()) {
+                $response .= $this->generatePasswordNotEqual();
+            }
         }
 
         return $response;
     }
 
+    private function generateUserRegistered()
+    {
+        return 'Registered new user. ';
+    }
+
+    private function generateUserExists()
+    {
+        return 'User exists, pick another username. ';
+    }
+
     private function generateUsernameTooShort()
     {
-        return '<p>Username has too few characters, at least ' . $this->model->getMinUsernameLength() . ' characters.</p>';
+        return 'Username has too few characters, at least ' . $this->model->getMinUsernameLength() . ' characters. ';
     }
 
     private function generatePasswordTooShort()
     {
-        return '<p>Password has too few characters, at least ' . $this->model->getMinPasswordLength() . ' characters.</p>';
+        return 'Password has too few characters, at least ' . $this->model->getMinPasswordLength() . ' characters. ';
     }
 
     private function generatePasswordNotEqual()
     {
-        return '<p>Passwords do not match.</p>';
+        return 'Passwords do not match. ';
     }
 
     /**
@@ -84,7 +126,7 @@ class RegisterView extends View
         return '
 			<form method="post" >
 				<fieldset>
-					<legend>Register - enter Username and password</legend>
+					<legend>Register a new user - Write username and password</legend>
 					<p id="' . self::$messageId . '">' . $message . '</p>
 
           <p>
@@ -98,7 +140,7 @@ class RegisterView extends View
 					<label for="' . self::$passwordRepeat . '">Repeat Password :</label>
 					<input type="password" id="' . self::$passwordRepeat . '" name="' . self::$passwordRepeat . '" />
 
-          <input type="submit" name="' . self::$register . '" value="login" />
+          <input type="submit" name="' . self::$register . '" value="Register" />
 				</fieldset>
 			</form>
 		';

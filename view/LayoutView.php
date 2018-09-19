@@ -16,7 +16,7 @@ class LayoutView
         $this->dayTimeView = new DateTimeView();
     }
 
-    public function render($isLoggedIn, $view)
+    public function render($user, $view)
     {
         echo '<!DOCTYPE html>
       <html>
@@ -26,7 +26,7 @@ class LayoutView
         </head>
         <body>
           <h1>Assignment 2</h1>
-          ' . $this->renderIsLoggedIn(false) . '
+          ' . $this->renderIsLoggedIn($user->getIsLoggedIn()) . '
 
           <div class="container">
               ' . $view . '

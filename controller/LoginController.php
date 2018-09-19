@@ -4,22 +4,30 @@ namespace Controller;
 
 class LoginController extends Controller
 {
-    private $user;
     private $view;
 
     public function __construct()
     {
-        // $this->user = $user;
         $this->view = new \View\LoginView();
     }
 
     public function index(): string
     {
-        return $this->showForm();
+        if ($this->view->userHasLoggedin()) {
+            return $this->loginUser($this->view->getLogin());
+        } else {
+            return $this->showForm();
+        }
+    }
+
+    private function loginUser(\Model\Login $loginModel)
+    {
+        $loginModel->loginUser();
+        return $this->view->toHTML($loginModel);
     }
 
     private function showForm(): string
     {
-        return $this->view->toHTML(null, '');
+        return $this->view->toHTML(null);
     }
 }
