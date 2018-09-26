@@ -29,23 +29,11 @@ class MySQL_Instance
         $this->connection->close();
     }
 
-    // public function query(string $queryString = '', $prepare = false)
     public function query(string $queryString = '')
     {
         if (!$this->connection || empty($queryString)) {
             return false;
         }
-
-        // if ($prepare) {
-        //     $preparedQuery = $this->connection->prepare($queryString);
-        //     foreach ($prepare as $param) {
-        //         var_dump($param);
-        //         $preparedQuery->bind_param('s', $param);
-        //     }
-        //     $preparedQuery->execute();
-        // } else {
-        //     $result = $this->connection->query($queryString);
-        // }
 
         $result = $this->connection->query($queryString);
 

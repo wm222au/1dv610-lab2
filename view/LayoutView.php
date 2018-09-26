@@ -18,6 +18,9 @@ class LayoutView
 
     public function render($user, $view)
     {
+
+        $body = $view->index();
+
         echo '<!DOCTYPE html>
       <html>
         <head>
@@ -29,7 +32,7 @@ class LayoutView
           ' . $this->renderIsLoggedIn($user->getIsLoggedIn()) . '
 
           <div class="container">
-              ' . $view . '
+              ' . $body . '
 
               ' . $this->dayTimeView->show() . '
           </div>
@@ -41,7 +44,11 @@ class LayoutView
     private function renderIsLoggedIn($isLoggedIn)
     {
         if ($isLoggedIn) {
-            return '<h2>Logged in</h2>';
+            return '<h2>Logged in</h2>
+            <form method="post">
+                <input type="hidden" name="LoginView::Logout" value="1"/>
+                <input type="submit" value="Logout">
+            </form>';
         } else {
             return '<h2>Not logged in</h2>';
         }

@@ -9,6 +9,7 @@ class Login
     private $user;
 
     private $isAuthenticated = false;
+    private $isLoggedOut = false;
     private $userExists = true;
 
     public function __construct(\Model\User $user)
@@ -36,6 +37,16 @@ class Login
         return $this->userRegistration;
     }
 
+    private function setIsLoggedOut(bool $isLoggedOut)
+    {
+        return $this->isLoggedOut = $isLoggedOut;
+    }
+
+    public function getIsLoggedOut()
+    {
+        return $this->isLoggedOut;
+    }
+
     private function setUserExists(bool $exists): bool
     {
         return $this->userExists = $exists;
@@ -48,12 +59,13 @@ class Login
 
     public function logoutUser()
     {
-
+        if ($this->user->logoutUser()) {
+            $this->setIsLoggedOut(true);
+        }
     }
 
     public function loginUser()
     {
-
         try {
             if ($this->user->loginUser()) {
                 $this->setIsAuthenticated(true);

@@ -31,11 +31,23 @@ class LoginView extends View
         return ($this->getUsername() !== null && $this->getPassword() !== null);
     }
 
-    public function getLogin(): \Model\Login
+    public function getUserLogin(): \Model\Login
     {
         $user = new \Model\User($this->getUsername(), $this->getPassword());
         $login = new \Model\Login($user);
         return $login;
+    }
+
+    public function getUserLogout()
+    {
+        $user = new \Model\User();
+        $login = new \Model\Login($user->getUser());
+        return $login;
+    }
+
+    public function getCookieName()
+    {
+        return self::$cookieName;
     }
 
     public function getLogout()
@@ -81,15 +93,29 @@ class LoginView extends View
     {
         $response = '';
 
-        if ($this->model->getIsUsernameEmpty()) {
+        if ($this->model->getIsLoggedOut()) {
+            $response .= $this->generateLogoutMessage();
+        } else if ($this->model->getIsUsernameEmpty()) {
             $response .= $this->generateUsernameIsEmptyHTML();
         } else if ($this->model->getIsPasswordEmpty()) {
             $response .= $this->generatePasswordIsEmptyHTML();
         } else if (!$this->model->getIsAuthenticated()) {
             $response .= $this->generateWrongCredentialsHTML();
+        } else {
+            $response .= $this->generateLoginMessage();
         }
 
         return $response;
+    }
+
+    private function generateLoginMessage()
+    {
+        return 'Welcome';
+    }
+
+    private function generateLogoutMessage()
+    {
+        return "Bye bye!";
     }
 
     private function generateUsernameIsEmptyHTML()

@@ -13,7 +13,7 @@ require_once 'controller/RegisterController.php';
 require_once 'model/Register.php';
 require_once 'model/Login.php';
 require_once 'model/User.php';
-require_once 'model/SessionStorage.php';
+require_once 'model/UserStorage.php';
 
 require_once 'router.php';
 require_once 'mysql.php';
@@ -27,16 +27,7 @@ if ($_ENV['environment'] == 'development') {
     ini_set('display_errors', 'Off');
 }
 
-// My Code
-// $db = new MySQL_Instance($_ENV['db_serverhost'], $_ENV['db_database'], $_ENV['db_username'], $_ENV['db_password']);
-// $db->connect();
-
 $db = new mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
-
-// $storage = new \Model\SessionStorage('User');
-// $user = $storage->loadEntry();
 
 $router = new Router(new \View\LayoutView());
 $router->route();
-
-// $storage->saveEntry($user);

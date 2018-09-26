@@ -21,7 +21,7 @@ class User
         $this->username = $username;
         $this->password = $password;
 
-        $this->storage = new \Model\SessionStorage('User', 'user');
+        $this->storage = new \Model\UserStorage();
     }
 
     public function getIsLoggedIn(): bool
@@ -128,26 +128,12 @@ class User
 
     public function logoutUser(): bool
     {
-        // global $db;
-
-        // $queryString = "SELECT * FROM Users WHERE username = $this->username LIMIT 1";
-        // $result = $db->query($queryString);
-
-        // if ($result && $result->num_rows > 0) {
-        //     $user = mysql_fetch_assoc($result);
-
-        //     if (password_verify($this->password, $user['password'])) {
-        //         $this->setUsername($user['username']);
-        //         $this->setPassword($user['password']);
-        //     } else {
-        //         throw new Exception('Password did not match.');
-        //     }
-
-        //     return true;
-        // } else {
-        //     return false;
-        // }
-        $this->storage->saveEntry($this);
+        try {
+            $this->storage->deleteEntry();
+            return true;
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
     public function isUserLoggedIn(): bool

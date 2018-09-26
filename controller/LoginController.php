@@ -14,9 +14,9 @@ class LoginController extends Controller
     public function index(): string
     {
         if ($this->view->userWillLogin()) {
-            return $this->loginUser($this->view->getLogin());
+            return $this->loginUser($this->view->getUserLogin());
         } else if ($this->view->userWillLogout()) {
-
+            return $this->logoutUser($this->view->getUserLogout());
         } else {
             return $this->showForm();
         }
@@ -30,7 +30,7 @@ class LoginController extends Controller
 
     private function logoutUser(\Model\Login $loginModel)
     {
-        $loginModel->loginUser();
+        $loginModel->logoutUser();
         return $this->view->toHTML($loginModel);
     }
 
