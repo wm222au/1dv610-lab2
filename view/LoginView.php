@@ -21,7 +21,12 @@ class LoginView extends View
         // $this->user = $toBeViewed;
     }
 
-    public function userHasLoggedIn(): bool
+    public function userWillLogout(): bool
+    {
+        return ($this->getLogout() !== null);
+    }
+
+    public function userWillLogin(): bool
     {
         return ($this->getUsername() !== null && $this->getPassword() !== null);
     }
@@ -33,10 +38,16 @@ class LoginView extends View
         return $login;
     }
 
+    public function getLogout()
+    {
+        return $_POST[self::$logout];
+    }
+
     public function getUsername()
     {
         return $_POST[self::$name];
     }
+
     public function getPassword()
     {
         return $_POST[self::$password];
@@ -45,7 +56,7 @@ class LoginView extends View
     public function toHTML($model): string
     {
         $this->model = $model;
-        $html = '<a href="?register">Register a new user.</a>';
+        $html = '<a href="?register">Register a new user</a>';
         $message = '';
 
         if ($this->model) {
@@ -83,17 +94,17 @@ class LoginView extends View
 
     private function generateUsernameIsEmptyHTML()
     {
-        return '<p>Username is missing</p>';
+        return 'Username is missing';
     }
 
     private function generatePasswordIsEmptyHTML()
     {
-        return '<p>Password is missing</p>';
+        return 'Password is missing';
     }
 
     private function generateWrongCredentialsHTML()
     {
-        return '<p>Wrong name or password</p>';
+        return 'Wrong name or password';
     }
 
     /**
@@ -125,10 +136,10 @@ class LoginView extends View
 					<p id="' . self::$messageId . '">' . $message . '</p>
 
 					<label for="' . self::$name . '">Username :</label>
-					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
+					<input type="text" id="' . self::$name . '" name="' . self::$name . '" value="' . $this->getUsername() . '" />
 
 					<label for="' . self::$password . '">Password :</label>
-					<input type="password" id="' . self::$password . '" name="' . self::$password . '" />
+					<input type="password" id="' . self::$password . '" name="' . self::$password . '" value="' . $this->getPassword() . '" />
 
 					<label for="' . self::$keep . '">Keep me logged in  :</label>
 					<input type="checkbox" id="' . self::$keep . '" name="' . self::$keep . '" />

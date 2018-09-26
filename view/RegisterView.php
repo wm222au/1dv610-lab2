@@ -20,7 +20,7 @@ class RegisterView extends View
         // $this->user = $toBeViewed;
     }
 
-    public function userHasRegistered(): bool
+    public function userWillRegister(): bool
     {
         return ($this->getUsername() !== null && $this->getPassword() !== null && $this->getPasswordRepeat() !== null);
     }
@@ -48,7 +48,7 @@ class RegisterView extends View
     public function toHTML($model): string
     {
         $this->model = $model;
-        $html = '<a href="./">Back to login.</a>';
+        $html = '<a href="./">Back to login</a>';
         $message = '';
 
         if ($this->model) {
@@ -131,14 +131,14 @@ class RegisterView extends View
 
           <p>
 					<label for="' . self::$name . '">Username :</label>
-          <input type="text" id="' . self::$name . '" name="' . self::$name . '" value="" />
+          <input type="text" id="' . self::$name . '" name="' . self::$name . '" value="' . $this->getUsername() . '" />
           </p>
 
 					<label for="' . self::$password . '">Password :</label>
-          <input type="password" id="' . self::$password . '" name="' . self::$password . '" />
+          <input type="password" id="' . self::$password . '" name="' . self::$password . '" value="' . $this->getPassword() . '" />
 
 					<label for="' . self::$passwordRepeat . '">Repeat Password :</label>
-					<input type="password" id="' . self::$passwordRepeat . '" name="' . self::$passwordRepeat . '" />
+					<input type="password" id="' . self::$passwordRepeat . '" name="' . self::$passwordRepeat . '" value="' . $this->getPasswordRepeat() . '" />
 
           <input type="submit" name="' . self::$register . '" value="Register" />
 				</fieldset>

@@ -35,6 +35,6 @@ class Router
             $this->contentView = new \Controller\LoginController();
         }
 
-        $this->layoutView->render($this->user->getUser(), $this->contentView->index());
+        echo $this->layoutView->render($this->user->getUser(), $this->contentView->index());
     }
 }

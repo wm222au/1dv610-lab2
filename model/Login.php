@@ -2,6 +2,8 @@
 
 namespace Model;
 
+use Exception;
+
 class Login
 {
     private $user;
@@ -42,6 +44,11 @@ class Login
     public function getUserExists(): bool
     {
         return $this->userExists;
+    }
+
+    public function logoutUser()
+    {
+
     }
 
     public function loginUser()

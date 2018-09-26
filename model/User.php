@@ -109,11 +109,8 @@ class User
         $queryString = "SELECT * FROM Users WHERE username = '" . $this->username . "' LIMIT 1";
         $result = $db->query($queryString);
 
-        var_dump($queryString, $result);
-
         if ($result && $result->num_rows > 0) {
             $user = $result->fetch_assoc();
-            var_dump($user);
 
             if (password_verify($this->password, $user['password'])) {
                 $this->setUsername($user['username']);

@@ -13,7 +13,7 @@ class RegisterController
 
     public function index()
     {
-        if ($this->view->userHasRegistered()) {
+        if ($this->view->userWillRegister()) {
             return $this->registerAccount($this->view->getRegistration());
         } else {
             return $this->showForm();
