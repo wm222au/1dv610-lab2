@@ -37,6 +37,11 @@ class Register
         return $this->passwordLengthValid;
     }
 
+    public function getUsernameCharsAreValid(): bool
+    {
+        return strip_tags($this->user->getUsername()) == $this->user->getUsername();
+    }
+
     public function getPasswordsEqual(): bool
     {
         return $this->passwordsEqual;
@@ -74,7 +79,7 @@ class Register
 
     public function registerUser()
     {
-        if ($this->getPasswordsEqual()) {
+        if ($this->getPasswordsEqual() && $this->getUsernameCharsAreValid()) {
             try {
                 if ($this->user->registerUserToDatabase()) {
                     $this->setUserRegistration(true);

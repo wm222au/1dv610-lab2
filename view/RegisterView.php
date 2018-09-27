@@ -92,6 +92,10 @@ class RegisterView extends View
             if (!$this->model->getPasswordsEqual()) {
                 $response .= $this->generatePasswordNotEqual();
             }
+            if (!$this->model->getUsernameCharsAreValid()) {
+                $_POST[self::$name] = strip_tags($_POST[self::$name]);
+                $response .= $this->generateInvalidUsernameChars();
+            }
         }
 
         return $response;
@@ -100,6 +104,11 @@ class RegisterView extends View
     private function generateUserRegistered()
     {
         return 'Registered new user. ';
+    }
+
+    private function generateInvalidUsernameChars()
+    {
+        return 'Username contains invalid characters.';
     }
 
     private function generateUserExists()
