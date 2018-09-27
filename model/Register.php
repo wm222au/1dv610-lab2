@@ -78,6 +78,7 @@ class Register
             try {
                 if ($this->user->registerUserToDatabase()) {
                     $this->setUserRegistration(true);
+                    return true;
                 } else {
                     $this->setUserExists(true);
                 }
@@ -85,5 +86,6 @@ class Register
                 $this->setUserRegistration(false);
             }
         }
+        return false;
     }
 }

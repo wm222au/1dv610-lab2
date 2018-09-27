@@ -17,6 +17,11 @@ class Login
         $this->user = $user;
     }
 
+    public function getIsLoggedIn(): bool
+    {
+        return $this->user->getIsLoggedIn();
+    }
+
     public function getIsUsernameEmpty(): bool
     {
         return $this->user->isUsernameEmpty();

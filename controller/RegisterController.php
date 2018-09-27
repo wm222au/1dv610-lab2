@@ -22,7 +22,10 @@ class RegisterController
 
     public function registerAccount(\Model\Register $registerModel)
     {
-        $registerModel->registerUser();
+        if ($registerModel->registerUser()) {
+            $login = $this->view->getUserLogin();
+            $login->loginUser();
+        }
         return $this->view->toHTML($registerModel);
     }
 

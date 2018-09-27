@@ -30,8 +30,12 @@ class LoginController extends Controller
 
     private function logoutUser(\Model\Login $loginModel)
     {
-        $loginModel->logoutUser();
-        return $this->view->toHTML($loginModel);
+        if ($loginModel->getIsLoggedIn()) {
+            $loginModel->logoutUser();
+            return $this->view->toHTML($loginModel);
+        } else {
+            return $this->showForm();
+        }
     }
 
     private function showForm(): string

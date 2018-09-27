@@ -106,7 +106,7 @@ class User
     {
         global $db;
 
-        $queryString = "SELECT * FROM Users WHERE username = '" . $this->username . "' LIMIT 1";
+        $queryString = "SELECT * FROM Users WHERE BINARY username = '" . $this->username . "' LIMIT 1";
         $result = $db->query($queryString);
 
         if ($result && $result->num_rows > 0) {
