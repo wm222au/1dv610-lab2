@@ -23,7 +23,7 @@ class LayoutView
         $body = $view->index();
 
         echo '<!DOCTYPE html>
-      <html>
+      <html lang="en">
         <head>
           <meta charset="utf-8">
           <title>Login Example</title>

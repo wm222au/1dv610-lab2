@@ -97,7 +97,7 @@ class User
 
         $hashedPassword = self::hash($this->password);
 
-        $escapedUsername = $mysqli->real_escape_string($this->username);
+        $escapedUsername = $db->real_escape_string($this->username);
         $queryString = "INSERT INTO users (username, password) VALUES ('$escapedUsername', '$hashedPassword')";
 
         return $db->query($queryString);
@@ -107,7 +107,7 @@ class User
     {
         global $db;
 
-        $escapedUsername = $mysqli->real_escape_string($this->username);
+        $escapedUsername = $db->real_escape_string($this->username);
         $queryString = "SELECT * FROM users WHERE BINARY username = '" . $escapedUsername . "' LIMIT 1";
         $result = $db->query($queryString);
 
