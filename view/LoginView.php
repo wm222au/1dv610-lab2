@@ -50,6 +50,11 @@ class LoginView extends View
         return self::$cookieName;
     }
 
+    public function getLogoutName()
+    {
+        return self::$logout;
+    }
+
     public function getLogout()
     {
         return $_POST[self::$logout];

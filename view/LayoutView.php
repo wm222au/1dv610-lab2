@@ -13,6 +13,7 @@ class LayoutView
     public function __construct()
     {
         // $this->user = $user;
+        $this->loginView = new \View\LoginView();
         $this->dayTimeView = new DateTimeView();
     }
 
@@ -43,14 +44,15 @@ class LayoutView
 
     private function renderIsLoggedIn($isLoggedIn)
     {
+        $logoutName = $this->loginView->getLogoutName();
         if ($isLoggedIn) {
-            return '<h2>Logged in</h2>
-            <form method="post">
-                <input type="hidden" name="LoginView::Logout" value="1"/>
-                <input type="submit" value="Logout">
-            </form>';
+            return "<h2>Logged in</h2>
+            <form method='post' action='./'>
+                <input type='hidden' name='$logoutName' value='1'/>
+                <input type='submit' value='Logout'>
+            </form>";
         } else {
-            return '<h2>Not logged in</h2>';
+            return "<h2>Not logged in</h2>";
         }
     }
 }

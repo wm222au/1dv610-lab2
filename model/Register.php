@@ -77,9 +77,14 @@ class Register
         return $this->userRegistration;
     }
 
+    public function isValid()
+    {
+        return ($this->getUsernameLengthValid() && $this->getUsernameCharsAreValid() && $this->getPasswordLengthValid() && $this->getPasswordsEqual());
+    }
+
     public function registerUser()
     {
-        if ($this->getPasswordsEqual() && $this->getUsernameCharsAreValid()) {
+        if ($this->isValid()) {
             try {
                 if ($this->user->registerUserToDatabase()) {
                     $this->setUserRegistration(true);
