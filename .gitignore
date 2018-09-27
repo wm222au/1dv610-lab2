@@ -1,2 +1,4 @@
 env.php
+env.local.php
+env.000webhost.php
 .vscode
