@@ -9,6 +9,7 @@ class LayoutView
 
     // private $user;
     private $dayTimeView;
+    private static $registerPageUrl = 'register';
 
     public function __construct()
     {
@@ -17,11 +18,13 @@ class LayoutView
         $this->dayTimeView = new DateTimeView();
     }
 
+    public function getUserNavigationRegister(): bool
+    {
+        return isset($_GET[$this::$registerPageUrl]);
+    }
+
     public function render($user, $view)
     {
-
-        $body = $view->index();
-
         echo '<!DOCTYPE html>
       <html lang="en">
         <head>
@@ -33,7 +36,7 @@ class LayoutView
           ' . $this->renderIsLoggedIn($user->getIsLoggedIn()) . '
 
           <div class="container">
-              ' . $body . '
+              ' . $view->index() . '
 
               ' . $this->dayTimeView->show() . '
           </div>

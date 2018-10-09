@@ -16,11 +16,6 @@ class LoginView extends View
     private static $keep = 'LoginView::KeepMeLoggedIn';
     private static $messageId = 'LoginView::Message';
 
-    public function __construct()
-    {
-        // $this->user = $toBeViewed;
-    }
-
     public function userWillLogout(): bool
     {
         return ($this->getLogout() !== null);

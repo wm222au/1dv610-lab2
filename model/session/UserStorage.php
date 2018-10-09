@@ -1,12 +1,18 @@
 <?php
 
-namespace Model;
+namespace Model\Session;
 
 session_start();
 
 class UserStorage
 {
     private $sessionKey = "UserStorage";
+    private $user;
+
+    public function __construct(\Model\User $user)
+    {
+        $this->user = $user;
+    }
 
     public function getSessionKey(): string
     {

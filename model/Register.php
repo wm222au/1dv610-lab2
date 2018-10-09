@@ -2,7 +2,7 @@
 
 namespace Model;
 
-class Register
+class RegisterModel
 {
     private $user;
 
@@ -37,6 +37,7 @@ class Register
         return $this->passwordLengthValid;
     }
 
+    // Move to view
     public function getUsernameCharsAreValid(): bool
     {
         return strip_tags($this->user->getUsername()) == $this->user->getUsername();

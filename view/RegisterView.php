@@ -15,11 +15,6 @@ class RegisterView extends View
     private $model;
     private $user;
 
-    public function __construct()
-    {
-        // $this->user = $toBeViewed;
-    }
-
     public function userWillRegister(): bool
     {
         return ($this->getUsername() !== null && $this->getPassword() !== null && $this->getPasswordRepeat() !== null);

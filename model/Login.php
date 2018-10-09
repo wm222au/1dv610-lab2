@@ -4,21 +4,24 @@ namespace Model;
 
 use Exception;
 
-class Login
+class LoginModel
 {
     private $user;
+    private $userSession;
 
     private $isAuthenticated = false;
     private $isLoggedOut = false;
     private $userExists = true;
 
-    public function __construct(\Model\User $user)
+    public function __construct(\Model\Session\UserStorage $userSession)
     {
-        $this->user = $user;
+        $this->userSession = $userSession;
+        $this->user = $this->userSession->loadEntry();
     }
 
     public function getIsLoggedIn(): bool
     {
+        // change to check session
         return $this->user->getIsLoggedIn();
     }
 
@@ -72,7 +75,7 @@ class Login
     public function loginUser()
     {
         try {
-            if ($this->user->loginUser()) {
+            if ($this->user->attemptUserAuthentication()) {
                 $this->setIsAuthenticated(true);
             } else {
                 $this->setIsAuthenticated(false);

@@ -4,6 +4,12 @@ namespace Model;
 
 use Exception;
 
+class UsernameTooShortException extends Exception{}
+class PasswordTooShortException extends Exception{}
+class UsernameTooShortException extends Exception{}
+
+
+
 class User
 {
     private $username;
@@ -21,7 +27,7 @@ class User
         $this->username = $username;
         $this->password = $password;
 
-        $this->storage = new \Model\UserStorage();
+        $this->storage = new \Model\UserSessionStorage();
     }
 
     public function getIsLoggedIn(): bool
