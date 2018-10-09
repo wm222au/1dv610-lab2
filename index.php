@@ -15,6 +15,8 @@ require_once 'model/Login.php';
 require_once 'model/components/User.php';
 require_once 'model/session/UserStorage.php';
 
+require_once 'helpers/Auth.php';
+
 require_once 'router.php';
 require_once 'mysql.php';
 
@@ -28,6 +30,8 @@ if ($_ENV['environment'] == 'development') {
 }
 
 $db = new mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
+
+// echo \Helpers\Auth::hash("bla");
 
 $router = new Router(new \View\LayoutView());
 $router->route();

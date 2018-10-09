@@ -4,40 +4,29 @@ namespace Model;
 
 use Exception;
 
-class UsernameTooShortException extends Exception{}
-class PasswordTooShortException extends Exception{}
-class UsernameTooShortException extends Exception{}
-
-
+class UsernameEmptyException extends Exception
+{}
+class UsernameTooShortException extends Exception
+{}
+class UsernameCharactersInvalidException extends Exception
+{}
+class PasswordEmptyException extends Exception
+{}
+class PasswordTooShortException extends Exception
+{}
 
 class User
 {
     private $username;
     private $password;
 
-    private $storage;
-
-    private static $hashOptions = ['cost' => 12];
-
     public static $minUsernameLength = 3;
     public static $minPasswordLength = 6;
 
-    public function __construct(string $username = '', string $password = '')
+    public function __construct(string $username, string $password)
     {
-        $this->username = $username;
-        $this->password = $password;
-
-        $this->storage = new \Model\UserSessionStorage();
-    }
-
-    public function getIsLoggedIn(): bool
-    {
-        return $this->storage->exists();
-    }
-
-    public function getUser(): \Model\User
-    {
-        return $this->storage->loadEntry();
+        $this->setUsername($username);
+        $this->setPassword($password);
     }
 
     public function getUsername(): string
@@ -47,11 +36,15 @@ class User
 
     private function setUsername($username)
     {
-        if ($this->isUsernameValid($username)) {
-            $this->username = $username;
-        } else {
-            throw new Exception("Username didn't fulfill conditions.");
+        if (empty($username)) {
+            throw new \Model\UsernameEmptyException();
+        } else if (strlen($username) >= self::$minUsernameLength) {
+            throw new \Model\UsernameTooShortException();
+            // Check if username contains valid username tags
+        } else if (strip_tags($username) !== $username) {
+            throw new \Model\Model\UsernameCharactersInvalidException();
         }
+        $this->username = $username;
     }
 
     public function getPassword(): string
@@ -61,36 +54,12 @@ class User
 
     private function setPassword($password)
     {
-        if ($this->isPasswordValid($password)) {
-            $this->password = $password;
-        } else {
-            throw new Exception("Password didn't fulfill conditions.");
+        if (empty($password)) {
+            throw new \Model\PasswordEmptyException();
+        } else if (strlen($password) >= self::$minPasswordLength) {
+            throw new \Model\PasswordTooShortException();
         }
-    }
-
-    public function isUsernameEmpty(): bool
-    {
-        return empty($this->username);
-    }
-
-    public function isPasswordEmpty(): bool
-    {
-        return empty($this->password);
-    }
-
-    public function isUsernameValid(): bool
-    {
-        return (strlen($this->username) >= self::$minUsernameLength);
-    }
-
-    public function isPasswordValid(): bool
-    {
-        return (strlen($this->password) >= self::$minPasswordLength);
-    }
-
-    private static function hash(string $clearTextPassword): string
-    {
-        return password_hash($clearTextPassword, PASSWORD_BCRYPT, SELF::$hashOptions);
+        $this->password = $password;
     }
 
     public function registerUserToDatabase(): bool
@@ -132,21 +101,5 @@ class User
         } else {
             return false;
         }
-    }
-
-    public function logoutUser(): bool
-    {
-        try {
-            $this->storage->deleteEntry();
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-
-    public function isUserLoggedIn(): bool
-    {
-        // Check if this class equals cookie(?)
-        return true;
     }
 }
