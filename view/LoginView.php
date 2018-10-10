@@ -2,10 +2,12 @@
 
 namespace View;
 
-class LoginView extends View
+class LoginView
 {
     private $user;
     private $model;
+
+    private $errors = array();
 
     private static $login = 'LoginView::Login';
     private static $logout = 'LoginView::Logout';
@@ -26,18 +28,35 @@ class LoginView extends View
         return ($this->getUsername() !== null && $this->getPassword() !== null);
     }
 
-    public function getUserLogin(): \Model\Login
+    // public function getUserLogin(): \Model\Login
+    public function getUserLogin(): \Model\User
     {
-        $user = new \Model\User($this->getUsername(), $this->getPassword());
-        $login = new \Model\Login($user);
-        return $login;
+
+        // One catch and then determine fault, or like this?
+        try {
+            return new \Model\User($this->getUsername(), $this->getPassword());
+        } catch (\Exception $e) {
+            $this->getErrorMessages($e);
+        }
+    }
+
+    private function getErrorMessages(\Exception $e)
+    {
+        if ($e instanceof \Model\UsernameEmptyException) {
+            $this->errors[] = $this->generateUsernameIsEmptyHTML();
+        } else if ($e instanceof \Model\PasswordEmptyException) {
+            $this->errors[] = $this->generatePasswordIsEmptyHTML();
+        } else {
+            $this->errors[] = $this->generateWrongCredentialsHTML();
+        }
+        throw new \Exception("Could not create usermodel");
     }
 
     public function getUserLogout()
     {
-        $user = new \Model\User();
-        $login = new \Model\Login($user->getUser());
-        return $login;
+        // $user = new \Model\User();
+        // $login = new \Model\Login($user->getUser());
+        // return $login;
     }
 
     public function getCookieName()
@@ -65,47 +84,18 @@ class LoginView extends View
         return $_POST[self::$password];
     }
 
-    public function toHTML($model): string
+    public function toHTML(): string
     {
-        $this->model = $model;
         $html = '<a href="?register">Register a new user</a>';
         $message = '';
 
-        if ($this->model) {
-            $message .= $this->response();
+        foreach ($this->errors as $error) {
+            $message .= $error . ". ";
         }
 
         $html .= $this->generateLoginFormHTML($message);
 
         return $html;
-
-    }
-
-    /**
-     * Create HTTP response
-     *
-     * Should be called after a login attempt has been determined
-     *
-     * @return  void BUT writes to standard output and cookies!
-     */
-
-    protected function response(): string
-    {
-        $response = '';
-
-        if ($this->model->getIsLoggedOut()) {
-            $response .= $this->generateLogoutMessage();
-        } else if ($this->model->getIsUsernameEmpty()) {
-            $response .= $this->generateUsernameIsEmptyHTML();
-        } else if ($this->model->getIsPasswordEmpty()) {
-            $response .= $this->generatePasswordIsEmptyHTML();
-        } else if (!$this->model->getIsAuthenticated()) {
-            $response .= $this->generateWrongCredentialsHTML();
-        } else {
-            $response .= $this->generateLoginMessage();
-        }
-
-        return $response;
     }
 
     private function generateLoginMessage()
@@ -175,11 +165,4 @@ class LoginView extends View
 			</form>
 		';
     }
-
-    //CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
-    private function getRequestUserName()
-    {
-        //RETURN REQUEST VARIABLE: USERNAME
-    }
-
 }
