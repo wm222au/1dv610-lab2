@@ -12,8 +12,8 @@ require_once 'controller/LoginController.php';
 require_once 'controller/RegisterController.php';
 
 // Models
-require_once 'model/Register.php';
-require_once 'model/Login.php';
+// require_once 'model/Register.php';
+// require_once 'model/Login.php';
 require_once 'model/component/User.php';
 require_once 'model/Session.php';
 

@@ -68,7 +68,7 @@ class LoginView
 
     private function getUserLoginViaCookie(): \Model\User
     {
-
+        return $_COOKIE[self::$cookieName];
     }
 
     private function getErrorMessages(\Exception $e)
@@ -131,6 +131,8 @@ class LoginView
 
     private function generateLoginMessage()
     {
+        // Check if via cookie or post
+        // return "Welcome back with cookie";
         return 'Welcome';
     }
 

@@ -23,17 +23,11 @@ class LoginController extends Controller
         return $this->showForm();
     }
 
-    private function userWantsLogin()
-    {
-        // check if user is posting login
-        // else check if cookie exists (via view - handle as IN-DATA)
-        // how handle "welcome back with cookie"?
-    }
-
     private function attemptLogin(\Model\User $user)
     {
         // login
-        $newUser = $this->registry->getUser($user);
+        $userCredentials = $this->registry->getUser($user);
+        // $this->registry->getUser($userCredentials);
         // set newUser cookie & session via session model
         return $this->showForm();
     }
