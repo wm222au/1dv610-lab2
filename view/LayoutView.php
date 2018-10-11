@@ -18,7 +18,7 @@ class LayoutView
         $this->dayTimeView = new DateTimeView();
     }
 
-    public function getUserNavigationRegister(): bool
+    public function getUserRequestsRegister(): bool
     {
         return isset($_GET[$this::$registerPageUrl]);
     }

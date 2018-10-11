@@ -25,19 +25,50 @@ class LoginView
 
     public function userWillLogin(): bool
     {
+        // return ($this->getUsername() !== null && $this->getPassword() !== null);
+        // do this via session model in future
+        // return (($this->getUsername() !== null && $this->getPassword() !== null) || isset($_COOKIE['user']));
+        return $this->userWillLoginViaParameter() || $this->userWillLoginViaCookie();
+    }
+
+    private function userWillLoginViaParameter(): bool
+    {
         return ($this->getUsername() !== null && $this->getPassword() !== null);
+    }
+
+    private function userWillLoginViaCookie(): bool
+    {
+        return isset($_COOKIE['user']);
     }
 
     // public function getUserLogin(): \Model\Login
     public function getUserLogin(): \Model\User
     {
-
         // One catch and then determine fault, or like this?
         try {
-            return new \Model\User($this->getUsername(), $this->getPassword());
+            return $this->getUserLogonType();
         } catch (\Exception $e) {
             $this->getErrorMessages($e);
         }
+    }
+
+    private function getUserLogonType()
+    {
+        if ($this->userWillLoginViaParameter()) {
+            return $this->getUserLoginViaParameters();
+        } else {
+            return $this->getUserLoginViaCookie();
+        }
+    }
+
+    private function getUserLoginViaParameters(): \Model\User
+    {
+        return new \Model\User($this->getUsername(), $this->getPassword());
+    }
+
+    private function getUserLoginViaCookie(): \Model\User
+    {
+
     }
 
     private function getErrorMessages(\Exception $e)
@@ -76,12 +107,12 @@ class LoginView
 
     public function getUsername()
     {
-        return $_POST[self::$name];
+        return isset($_POST[self::$name]) ? $_POST[self::$name] : "";
     }
 
     public function getPassword()
     {
-        return $_POST[self::$password];
+        return isset($_POST[self::$password]) ? $_POST[self::$password] : "";
     }
 
     public function toHTML(): string

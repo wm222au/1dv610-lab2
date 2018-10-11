@@ -13,20 +13,21 @@ class NavigationController extends Controller
 
     public function index(): string
     {
-        if ($this->view->getUserNavigationRegister) {
-            $this->createRegisterPage();
+        if ($this->view->getUserRequestsRegister()) {
+            $controller = $this->createRegisterPage();
         } else {
-            $this->createLoginPage();
+            $controller = $this->createLoginPage();
         }
+        $controller->index();
     }
 
     private function createLoginPage()
     {
-
+        return new \Controller\LoginController();
     }
 
     private function createRegisterPage()
     {
-
+        return new \Controller\RegisterController();
     }
 }

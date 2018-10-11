@@ -4,8 +4,7 @@ require_once 'env.php';
 
 // Helpers
 require_once 'helpers/Auth.php';
-require_once 'router.php';
-require_once 'mysql.php';
+require_once 'helpers/mysql.php';
 
 // Controllers
 require_once 'controller/Controller.php';
@@ -24,6 +23,7 @@ require_once 'view/LayoutView.php';
 require_once 'view/LoginView.php';
 require_once 'view/RegisterView.php';
 
+// Enable errors if in development environment
 if ($_ENV['environment'] == 'development') {
     error_reporting(E_ALL);
     ini_set('display_errors', 'On');

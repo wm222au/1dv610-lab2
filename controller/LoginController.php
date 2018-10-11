@@ -9,37 +9,47 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->view = new \View\LoginView();
+        $this->registry = new \Model\Registry\PersitentUserRegistry();
     }
 
     public function index(): string
     {
         if ($this->view->userWillLogin()) {
-            return $this->loginUser($this->view->getUserLogin());
+            return $this->attemptLogin($this->view->getUserLogin());
         } else if ($this->view->userWillLogout()) {
-            return $this->logoutUser($this->view->getUserLogout());
-        } else {
-            return $this->showForm();
+            return $this->attemptLogout($this->view->getUserLogout());
         }
+
+        return $this->showForm();
     }
 
-    private function loginUser(\Model\Login $loginModel)
+    private function userWantsLogin()
     {
-        $loginModel->loginUser();
-        return $this->view->toHTML($loginModel);
+        // check if user is posting login
+        // else check if cookie exists (via view - handle as IN-DATA)
+        // how handle "welcome back with cookie"?
     }
 
-    private function logoutUser(\Model\Login $loginModel)
+    private function attemptLogin(\Model\User $user)
     {
+        // login
+        $newUser = $this->registry->getUser($user);
+        // set newUser cookie & session via session model
+        return $this->showForm();
+    }
+
+    private function attemptLogout()
+    {
+        // is logged in
         if ($loginModel->getIsLoggedIn()) {
-            $loginModel->logoutUser();
-            return $this->view->toHTML($loginModel);
-        } else {
-            return $this->showForm();
+            // logout
+
         }
+        return $this->showForm();
     }
 
     private function showForm(): string
     {
-        return $this->view->toHTML(null);
+        return $this->view->toHTML();
     }
 }
