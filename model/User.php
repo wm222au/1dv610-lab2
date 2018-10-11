@@ -2,19 +2,6 @@
 
 namespace Model;
 
-use Exception;
-
-class UsernameEmptyException extends Exception
-{}
-class UsernameTooShortException extends Exception
-{}
-class UsernameCharactersInvalidException extends Exception
-{}
-class PasswordEmptyException extends Exception
-{}
-class PasswordTooShortException extends Exception
-{}
-
 class User
 {
     private $username;

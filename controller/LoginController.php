@@ -5,11 +5,12 @@ namespace Controller;
 class LoginController extends Controller
 {
     private $view;
+    private $userRegistry;
 
-    public function __construct()
+    public function __construct(\Inter\IPersistentUserRegistry $registry)
     {
         $this->view = new \View\LoginView();
-        $this->registry = new \Model\Registry\PersitentUserRegistry();
+        $this->userRegistry = $registry;
     }
 
     public function index(): string
@@ -26,7 +27,7 @@ class LoginController extends Controller
     private function attemptLogin(\Model\User $user)
     {
         // login
-        $userCredentials = $this->registry->getUser($user);
+        $userCredentials = $this->userRegistry->getUser($user);
         // $this->registry->getUser($userCredentials);
         // set newUser cookie & session via session model
         return $this->showForm();

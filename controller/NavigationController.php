@@ -5,9 +5,11 @@ namespace Controller;
 class NavigationController extends Controller
 {
     private $view;
+    private $db;
 
-    public function __construct(\View\LayoutView $view)
+    public function __construct(\View\LayoutView $view, $db)
     {
+        $this->db = $db;
         $this->view = $view;
     }
 
@@ -18,12 +20,12 @@ class NavigationController extends Controller
         } else {
             $controller = $this->createLoginPage();
         }
-        $controller->index();
+        $view->render(false, $controller->index());
     }
 
     private function createLoginPage()
     {
-        return new \Controller\LoginController();
+        return new \Controller\LoginController(new \Model\Registry\PersistentUserRegistryMySQL($this->db));
     }
 
     private function createRegisterPage()

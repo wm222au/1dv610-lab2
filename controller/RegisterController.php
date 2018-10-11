@@ -5,10 +5,12 @@ namespace Controller;
 class RegisterController
 {
     private $view;
+    private $userRegistry;
 
-    public function __construct()
+    public function __construct(\Inter\IPersistentUserRegistry $registry)
     {
         $this->view = new \View\RegisterView();
+        $this->userRegistry = $registry;
     }
 
     public function index()

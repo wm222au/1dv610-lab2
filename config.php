@@ -2,19 +2,30 @@
 // Locales
 require_once 'env.php';
 
+// Database
+require_once 'database/PersistentRegistryMySQL.php';
+require_once 'database/PersistentTokenRegistryMySQL.php';
+require_once 'database/PersistentUserRegistryMySQL.php';
+
 // Helpers
 require_once 'helpers/Auth.php';
-require_once 'helpers/mysql.php';
+require_once 'helpers/Mysql.php';
+
+// Interfaces
+require_once 'interface/IPersistentTokenRegistry.php';
+require_once 'interface/IPersistentUserRegistry.php';
 
 // Controllers
 require_once 'controller/Controller.php';
+require_once 'controller/NavigationController.php';
 require_once 'controller/LoginController.php';
 require_once 'controller/RegisterController.php';
 
 // Models
-// require_once 'model/Register.php';
-// require_once 'model/Login.php';
-require_once 'model/component/User.php';
+require_once 'model/User.php';
+require_once 'model/UserCredentials.php';
+require_once 'model/Username.php';
+require_once 'model/Password.php';
 require_once 'model/Session.php';
 
 // Views

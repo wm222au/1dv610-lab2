@@ -33,7 +33,7 @@ class LayoutView
         </head>
         <body>
           <h1>Assignment 2</h1>
-          ' . $this->renderIsLoggedIn($user->getIsLoggedIn()) . '
+          ' . $this->renderIsLoggedIn(false) . '
 
           <div class="container">
               ' . $view->index() . '
