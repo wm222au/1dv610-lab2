@@ -2,7 +2,7 @@
 
 namespace View;
 
-class LoginView
+class LoginView extends View
 {
     private $user;
     private $model;
@@ -28,12 +28,13 @@ class LoginView
         // return ($this->getUsername() !== null && $this->getPassword() !== null);
         // do this via session model in future
         // return (($this->getUsername() !== null && $this->getPassword() !== null) || isset($_COOKIE['user']));
-        return $this->userWillLoginViaParameter() || $this->userWillLoginViaCookie();
+        // var_dump($this->userWillLoginViaParameter(), $this->userWillLoginViaCookie(), $this->getUsername(), $this->getPassword());
+        return ($this->userWillLoginViaParameter() || $this->userWillLoginViaCookie());
     }
 
     private function userWillLoginViaParameter(): bool
     {
-        return ($this->getUsername() !== null && $this->getPassword() !== null);
+        return (!empty($this->getUsername()) && !empty($this->getPassword() !== null));
     }
 
     private function userWillLoginViaCookie(): bool

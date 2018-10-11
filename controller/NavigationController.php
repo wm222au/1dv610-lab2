@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-class NavigationController extends Controller
+class NavigationController
 {
     private $view;
     private $db;
@@ -13,19 +13,19 @@ class NavigationController extends Controller
         $this->view = $view;
     }
 
-    public function index(): string
+    public function index()
     {
         if ($this->view->getUserRequestsRegister()) {
             $controller = $this->createRegisterPage();
         } else {
             $controller = $this->createLoginPage();
         }
-        $view->render(false, $controller->index());
+        $this->view->render(false, $controller->index());
     }
 
     private function createLoginPage()
     {
-        return new \Controller\LoginController(new \Model\Registry\PersistentUserRegistryMySQL($this->db));
+        return new \Controller\LoginController(new \Database\PersitentRegistryMySQLFactory($this->db));
     }
 
     private function createRegisterPage()

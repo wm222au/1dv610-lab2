@@ -20,6 +20,6 @@ $db = new mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_passwor
 // echo $view->toHTML();
 
 $view = new \View\LayoutView();
-$controller = new \Controller\NavigationController($view);
+$controller = new \Controller\NavigationController($view, $db);
 
 $controller->index();

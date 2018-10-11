@@ -7,7 +7,7 @@ class RegisterController
     private $view;
     private $userRegistry;
 
-    public function __construct(\Inter\IPersistentUserRegistry $registry)
+    public function __construct(\Database\PersistentRegistryFactory $factory)
     {
         $this->view = new \View\RegisterView();
         $this->userRegistry = $registry;

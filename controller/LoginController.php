@@ -6,14 +6,16 @@ class LoginController extends Controller
 {
     private $view;
     private $userRegistry;
+    private $tokenRegistry;
 
-    public function __construct(\Inter\IPersistentUserRegistry $registry)
+    public function __construct(\Database\PersitentRegistryFactory $factory)
     {
         $this->view = new \View\LoginView();
-        $this->userRegistry = $registry;
+        $this->userRegistry = $factory->build("User");
+        $this->tokenRegistry = $factory->build("Token");
     }
 
-    public function index(): string
+    public function index(): \View\View
     {
         if ($this->view->userWillLogin()) {
             return $this->attemptLogin($this->view->getUserLogin());
@@ -27,7 +29,7 @@ class LoginController extends Controller
     private function attemptLogin(\Model\User $user)
     {
         // login
-        $userCredentials = $this->userRegistry->getUser($user);
+        // $userCredentials = $this->userRegistry->getUser($user);
         // $this->registry->getUser($userCredentials);
         // set newUser cookie & session via session model
         return $this->showForm();
@@ -36,15 +38,15 @@ class LoginController extends Controller
     private function attemptLogout()
     {
         // is logged in
-        if ($loginModel->getIsLoggedIn()) {
-            // logout
+        // if ($loginModel->getIsLoggedIn()) {
+        //     // logout
 
-        }
+        // }
         return $this->showForm();
     }
 
-    private function showForm(): string
+    private function showForm(): \View\View
     {
-        return $this->view->toHTML();
+        return $this->view;
     }
 }

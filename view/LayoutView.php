@@ -36,7 +36,7 @@ class LayoutView
           ' . $this->renderIsLoggedIn(false) . '
 
           <div class="container">
-              ' . $view->index() . '
+              ' . $view->toHTML() . '
 
               ' . $this->dayTimeView->show() . '
           </div>

@@ -8,11 +8,11 @@ class UserNotFoundException extends \Exception
 class UserAlreadyExistsException extends \Exception
 {}
 
-class PersitentUserRegistryMySQL extends PersistentRegistryMySQL implements \Inter\IPersistentUserRegistry
+class PersistentUserRegistryMySQL extends PersistentRegistryMySQL implements \Interfaces\IPersistentRegistry
 {
-    public function getUser($user): \Model\User
+    public function get($user): \Model\User
     {
-        $stmt = $mysqli->prepare("SELECT * FROM users WHERE BINARY username = ? LIMIT 1");
+        $stmt = $this->db->prepare("SELECT * FROM users WHERE BINARY username = ? LIMIT 1");
         $stmt->bind_param("s", $user->getUsername());
         $stmt->execute();
 
@@ -30,18 +30,18 @@ class PersitentUserRegistryMySQL extends PersistentRegistryMySQL implements \Int
         return new \Model\User($user->username, $user->password);
     }
 
-    public function hasUser($user): bool
+    public function exists($user): bool
     {
 
     }
 
-    public function addUser($user)
+    public function add($user)
     {
         $token = 12;
         $hashedPassword = \Helpers\Auth::hash($user->getPassword());
 
         try {
-            $stmt = $db->prepare("INSERT INTO Users (username, password, tokenId) VALUES (?, ?, ?)");
+            $stmt = $this->db->prepare("INSERT INTO Users (username, password, tokenId) VALUES (?, ?, ?)");
             $stmt->bind_param("ssi", $user->getUsername(), $hashedPassword, $token);
             $stmt->execute();
             $stmt->close();

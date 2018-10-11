@@ -4,5 +4,5 @@ namespace Controller;
 
 abstract class Controller
 {
-    abstract public function index(): string;
+    abstract public function index(): \View\View;
 }

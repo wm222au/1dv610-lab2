@@ -47,7 +47,7 @@ class RegisterView extends View
         return $_POST[self::$passwordRepeat];
     }
 
-    public function toHTML($model): string
+    public function toHTML(): string
     {
         $this->model = $model;
         $html = '<a href="./">Back to login</a>';
@@ -60,40 +60,6 @@ class RegisterView extends View
         $html .= $this->generateRegisterFormHTML($message);
 
         return $html;
-    }
-
-    /**
-     * Create HTTP response
-     *
-     * Should be called after a login attempt has been determined
-     *
-     * @return  void BUT writes to standard output and cookies!
-     */
-    protected function response(): string
-    {
-        $response = '';
-
-        if ($this->model->getUserRegistration()) {
-            $response .= $this->generateUserRegistered();
-        } else if ($this->model->getUserExists()) {
-            $response .= $this->generateUserExists();
-        } else {
-            if (!$this->model->getUsernameLengthValid()) {
-                $response .= $this->generateUsernameTooShort();
-            }
-            if (!$this->model->getPasswordLengthValid()) {
-                $response .= $this->generatePasswordTooShort();
-            }
-            if (!$this->model->getPasswordsEqual()) {
-                $response .= $this->generatePasswordNotEqual();
-            }
-            if (!$this->model->getUsernameCharsAreValid()) {
-                $_POST[self::$name] = strip_tags($_POST[self::$name]);
-                $response .= $this->generateInvalidUsernameChars();
-            }
-        }
-
-        return $response;
     }
 
     private function generateUserRegistered()
