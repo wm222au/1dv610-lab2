@@ -2,7 +2,7 @@
 
 namespace Helpers;
 
-class Auth
+class AuthUtilities
 {
     private static $hashOptions = ['cost' => 12];
 

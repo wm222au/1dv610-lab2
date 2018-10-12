@@ -36,13 +36,6 @@ class RegisterView extends View
 
     }
 
-    // public function getUserLogin(): \Model\Login
-    // {
-    //     $user = new \Model\User($this->getUsername(), $this->getPassword());
-    //     $login = new \Model\Login($user);
-    //     return $login;
-    // }
-
     public function getUsername()
     {
         return $_POST[self::$name];

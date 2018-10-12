@@ -10,6 +10,7 @@ class LoginController extends Controller
 
     public function __construct(\Database\PersistentRegistryFactory $factory)
     {
+        $this->viewModel = new \model\LoginViewModel();
         $this->view = new \View\LoginView();
         $this->userRegistry = $factory->build($this->getClassName(\Model\User::class));
         $this->tokenRegistry = $factory->build($this->getClassName(\Model\Token::class));
@@ -33,7 +34,7 @@ class LoginController extends Controller
             $user = $this->view->getUserLogin();
             $this->authenticateClient($user);
         } catch (\Exception $e) {
-
+            $this->viewModel->handleError($e);
         }
         return $this->showForm();
     }

@@ -35,28 +35,34 @@ class PersistentUserRegistryMySQL extends PersistentRegistryMySQL implements \In
 
     }
 
+    public function compare($user): bool
+    {}
+
     public function add($user)
     {
         $token = 1;
-        $hashedPassword = \Helpers\Auth::hash($user->getPassword());
-
-        var_dump($user, $token, $hashedPassword);
+        $hashedPassword = \Helpers\AuthUtilities::hash($user->getPassword());
 
         $db = new \mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
 
         try {
             $stmt = $db->prepare("INSERT INTO Users (username, password, tokenId) VALUES (?, ?, ?)");
-            var_dump($stmt);
             $stmt->bind_param("ssi", $user->getUsername(), $hashedPassword, $token);
-            var_dump(2);
             $stmt->execute();
-            var_dump(3);
+
+            $this->checkForErrors($stmt->errno);
+
             $stmt->close();
         } catch (Exception $e) {
-            if ($mysqli->errno === 1062) {
-                // Duplicate
-                throw new \Model\Registry\UserAlreadyExistsException();
-            }
+            throw new \Exception("DB Error occured");
+        }
+    }
+
+    private function checkForErrors($errorNumber)
+    {
+        switch ($errorNumber) {
+            case 1062:
+                throw new \Database\UserAlreadyExistsException();
         }
     }
 }

@@ -31,12 +31,12 @@ class LoginView extends View
         // do this via session model in future
         // return (($this->getUsername() !== null && $this->getPassword() !== null) || isset($_COOKIE['user']));
         // var_dump($this->userWillLoginViaParameter(), $this->userWillLoginViaCookie(), $this->getUsername(), $this->getPassword());
-        return ($this->userWillLoginViaParameter() || $this->userWillLoginViaCookie());
+        return ($this->userWillLoginViaParameters() || $this->userWillLoginViaCookie());
     }
 
-    private function userWillLoginViaParameter(): bool
+    private function userWillLoginViaParameters(): bool
     {
-        return (!empty($this->getUsername()) && !empty($this->getPassword() !== null));
+        return $this->getUsername() !== null && $this->getPassword() !== null;
     }
 
     private function userWillLoginViaCookie(): bool
@@ -48,16 +48,16 @@ class LoginView extends View
     public function getUserLogin(): \Model\User
     {
         // One catch and then determine fault, or like this?
-        try {
-            return $this->getUserLogonType();
-        } catch (\Exception $e) {
-            $this->getErrorMessages($e);
-        }
+        return $this->getUserLogonType();
+        // try {
+        // } catch (\Exception $e) {
+        //     $this->getErrorMessages($e);
+        // }
     }
 
     private function getUserLogonType(): \Model\User
     {
-        if ($this->userWillLoginViaParameter()) {
+        if ($this->userWillLoginViaParameters()) {
             return $this->getUserLoginViaParameters();
         } else {
             return $this->getUserLoginViaCookie();
@@ -66,8 +66,7 @@ class LoginView extends View
 
     private function getUserLoginViaParameters(): \Model\User
     {
-        return new \Model\User(new \Model\Username($this->getUsername()),
-            new \Model\Password($this->getPassword()));
+        return new \Model\User(new \Model\Username($this->getUsername()), new \Model\Password($this->getPassword()));
     }
 
     private function getUserLoginViaCookie(): \Model\User
@@ -75,17 +74,18 @@ class LoginView extends View
         return $_COOKIE[self::$cookieName];
     }
 
-    private function getErrorMessages(\Exception $e)
-    {
-        if ($e instanceof \Model\UsernameEmptyException) {
-            $this->errors[] = $this->generateUsernameIsEmptyHTML();
-        } else if ($e instanceof \Model\PasswordEmptyException) {
-            $this->errors[] = $this->generatePasswordIsEmptyHTML();
-        } else {
-            $this->errors[] = $this->generateWrongCredentialsHTML();
-        }
-        throw new \Exception("Could not create usermodel");
-    }
+    // private function getErrorMessages(\Exception $e)
+    // {
+    //     if ($e instanceof \Model\UsernameEmptyException) {
+    //         $this->errors[] = $this->generateUsernameIsEmptyHTML();
+    //     } else if ($e instanceof \Model\PasswordEmptyException) {
+    //         $this->errors[] = $this->generatePasswordIsEmptyHTML();
+    //     } else {
+    //         $this->errors[] = $this->generateWrongCredentialsHTML();
+    //     }
+
+    //     throw new \Exception("Could not create usermodel");
+    // }
 
     public function getUserLogout()
     {
@@ -125,6 +125,7 @@ class LoginView extends View
         $html = "<a href='?{$registerUrl}'>Register a new user</a>";
         $message = '';
 
+        var_dump($this->errors);
         foreach ($this->errors as $error) {
             $message .= $error . ". ";
         }

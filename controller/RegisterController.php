@@ -9,6 +9,7 @@ class RegisterController extends Controller
 
     public function __construct(\Database\PersistentRegistryFactory $factory)
     {
+        $this->viewModel = new \model\RegisterViewModel();
         $this->view = new \View\RegisterView();
         $this->userRegistry = $factory->build($this->getClassName(\Model\User::class));
         $this->tokenRegistry = $factory->build($this->getClassName(\Model\Token::class));
@@ -28,7 +29,7 @@ class RegisterController extends Controller
             $user = $this->view->getRegistration();
             $this->createNewUser($user);
         } catch (\Exception $e) {
-
+            $this->viewModel->handleError($e);
         }
         return $this->showForm();
     }

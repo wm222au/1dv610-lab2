@@ -13,6 +13,9 @@ class PersistentTokenRegistryMySQL extends PersistentRegistryMySQL implements \I
     public function exists($token): bool
     {}
 
+    public function compare($token): bool
+    {}
+
     public function add($token)
     {
         $token = "blabla";

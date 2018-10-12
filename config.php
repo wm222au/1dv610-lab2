@@ -13,8 +13,7 @@ require_once 'database/mysql/PersistentTokenRegistryMySQL.php';
 require_once 'database/mysql/PersistentUserRegistryMySQL.php';
 
 // Helpers
-require_once 'helpers/Auth.php';
-require_once 'helpers/Mysql.php';
+require_once 'helpers/AuthUtilities.php';
 
 // Controllers
 require_once 'controller/Controller.php';
@@ -23,9 +22,13 @@ require_once 'controller/LoginController.php';
 require_once 'controller/RegisterController.php';
 
 // Models
-require_once 'model/User.php';
-require_once 'model/Username.php';
-require_once 'model/Password.php';
+require_once 'model/object/User.php';
+require_once 'model/object/Username.php';
+require_once 'model/object/Password.php';
+require_once 'model/object/Token.php';
+require_once 'model/layer/IViewModel.php';
+require_once 'model/layer/LoginViewModel.php';
+require_once 'model/layer/RegisterViewModel.php';
 require_once 'model/Session.php';
 
 // Views
