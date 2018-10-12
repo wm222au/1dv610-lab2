@@ -37,13 +37,20 @@ class PersistentUserRegistryMySQL extends PersistentRegistryMySQL implements \In
 
     public function add($user)
     {
-        $token = 12;
+        $token = 1;
         $hashedPassword = \Helpers\Auth::hash($user->getPassword());
 
+        var_dump($user, $token, $hashedPassword);
+
+        $db = new \mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
+
         try {
-            $stmt = $this->db->prepare("INSERT INTO Users (username, password, tokenId) VALUES (?, ?, ?)");
+            $stmt = $db->prepare("INSERT INTO Users (username, password, tokenId) VALUES (?, ?, ?)");
+            var_dump($stmt);
             $stmt->bind_param("ssi", $user->getUsername(), $hashedPassword, $token);
+            var_dump(2);
             $stmt->execute();
+            var_dump(3);
             $stmt->close();
         } catch (Exception $e) {
             if ($mysqli->errno === 1062) {

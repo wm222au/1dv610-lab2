@@ -2,7 +2,7 @@
 
 namespace Database;
 
-class PersitentRegistryMySQLFactory extends \Database\PersitentRegistryFactory
+class PersistentRegistryMySQLFactory extends \Database\PersistentRegistryFactory
 {
     public function __construct($dataSource)
     {

@@ -15,7 +15,7 @@ class NavigationController
 
     public function index()
     {
-        if ($this->view->getUserRequestsRegister()) {
+        if ($this->view->getUserPageRequest(\View\RegisterView::$viewUrl)) {
             $controller = $this->createRegisterPage();
         } else {
             $controller = $this->createLoginPage();
@@ -25,11 +25,11 @@ class NavigationController
 
     private function createLoginPage()
     {
-        return new \Controller\LoginController(new \Database\PersitentRegistryMySQLFactory($this->db));
+        return new \Controller\LoginController(new \Database\PersistentRegistryMySQLFactory($this->db));
     }
 
     private function createRegisterPage()
     {
-        return new \Controller\RegisterController();
+        return new \Controller\RegisterController(new \Database\PersistentRegistryMySQLFactory($this->db));
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Database;
 
-abstract class PersitentRegistryFactory
+abstract class PersistentRegistryFactory
 {
     private $dataSource;
 

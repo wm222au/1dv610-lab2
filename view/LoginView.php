@@ -4,6 +4,8 @@ namespace View;
 
 class LoginView extends View
 {
+    public static $viewUrl = "./";
+
     private $user;
     private $model;
 
@@ -53,7 +55,7 @@ class LoginView extends View
         }
     }
 
-    private function getUserLogonType()
+    private function getUserLogonType(): \Model\User
     {
         if ($this->userWillLoginViaParameter()) {
             return $this->getUserLoginViaParameters();
@@ -64,7 +66,8 @@ class LoginView extends View
 
     private function getUserLoginViaParameters(): \Model\User
     {
-        return new \Model\User($this->getUsername(), $this->getPassword());
+        return new \Model\User(new \Model\Username($this->getUsername()),
+            new \Model\Password($this->getPassword()));
     }
 
     private function getUserLoginViaCookie(): \Model\User
@@ -118,7 +121,8 @@ class LoginView extends View
 
     public function toHTML(): string
     {
-        $html = '<a href="?register">Register a new user</a>';
+        $registerUrl = RegisterView::$viewUrl;
+        $html = "<a href='?{$registerUrl}'>Register a new user</a>";
         $message = '';
 
         foreach ($this->errors as $error) {

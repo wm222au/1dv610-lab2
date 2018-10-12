@@ -24,7 +24,6 @@ require_once 'controller/RegisterController.php';
 
 // Models
 require_once 'model/User.php';
-require_once 'model/UserCredentials.php';
 require_once 'model/Username.php';
 require_once 'model/Password.php';
 require_once 'model/Session.php';

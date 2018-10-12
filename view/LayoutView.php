@@ -9,7 +9,6 @@ class LayoutView
 
     // private $user;
     private $dayTimeView;
-    private static $registerPageUrl = 'register';
 
     public function __construct()
     {
@@ -18,9 +17,9 @@ class LayoutView
         $this->dayTimeView = new DateTimeView();
     }
 
-    public function getUserRequestsRegister(): bool
+    public function getUserPageRequest($getParam): bool
     {
-        return isset($_GET[$this::$registerPageUrl]);
+        return isset($_GET[$getParam]);
     }
 
     public function render($user, $view)
@@ -45,7 +44,7 @@ class LayoutView
     ';
     }
 
-    private function renderIsLoggedIn($isLoggedIn)
+    public function renderIsLoggedIn($isLoggedIn)
     {
         $logoutName = $this->loginView->getLogoutName();
         if ($isLoggedIn) {

@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-class RegisterController
+class RegisterController extends Controller
 {
     private $view;
     private $userRegistry;
@@ -10,29 +10,36 @@ class RegisterController
     public function __construct(\Database\PersistentRegistryFactory $factory)
     {
         $this->view = new \View\RegisterView();
-        $this->userRegistry = $registry;
+        $this->userRegistry = $factory->build($this->getClassName(\Model\User::class));
+        $this->tokenRegistry = $factory->build($this->getClassName(\Model\Token::class));
     }
 
-    public function index()
+    public function index(): \View\View
     {
         if ($this->view->userWillRegister()) {
-            return $this->registerAccount($this->view->getRegistration());
-        } else {
-            return $this->showForm();
+            return $this->attemptRegisterAccount();
         }
+        return $this->showForm();
     }
 
-    public function registerAccount(\Model\Register $registerModel)
+    private function attemptRegisterAccount(): \View\View
     {
-        if ($registerModel->registerUser()) {
-            $login = $this->view->getUserLogin();
-            $login->loginUser();
+        try {
+            $user = $this->view->getRegistration();
+            $this->createNewUser($user);
+        } catch (\Exception $e) {
+
         }
-        return $this->view->toHTML($registerModel);
+        return $this->showForm();
     }
 
-    public function showForm()
+    private function createNewUser(\Model\User $user)
     {
-        return $this->view->toHTML(null);
+        $this->userRegistry->add($user);
+    }
+
+    private function showForm(): \View\View
+    {
+        return $this->view;
     }
 }

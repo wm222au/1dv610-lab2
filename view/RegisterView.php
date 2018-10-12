@@ -4,6 +4,8 @@ namespace View;
 
 class RegisterView extends View
 {
+    public static $viewUrl = "register";
+
     private static $register = 'RegisterView::Register';
     private static $name = 'RegisterView::UserName';
     private static $password = 'RegisterView::Password';
@@ -20,19 +22,26 @@ class RegisterView extends View
         return ($this->getUsername() !== null && $this->getPassword() !== null && $this->getPasswordRepeat() !== null);
     }
 
-    public function getRegistration(): \Model\Register
+    public function getRegistration(): \Model\User
     {
-        $user = new \Model\User($this->getUsername(), $this->getPassword());
-        $register = new \Model\Register($user, $this->getPasswordRepeat());
-        return $register;
+        $password = new \Model\Password($this->getPassword());
+        $passwordRepeat = new \Model\Password($this->getPasswordRepeat());
+
+        if ($password->get() === $passwordRepeat->get()) {
+            return new \Model\User(new \Model\Username($this->getUsername()),
+                new \Model\Password($this->getPassword()));
+        } else {
+            throw new \Exception("Passwords not alike");
+        }
+
     }
 
-    public function getUserLogin(): \Model\Login
-    {
-        $user = new \Model\User($this->getUsername(), $this->getPassword());
-        $login = new \Model\Login($user);
-        return $login;
-    }
+    // public function getUserLogin(): \Model\Login
+    // {
+    //     $user = new \Model\User($this->getUsername(), $this->getPassword());
+    //     $login = new \Model\Login($user);
+    //     return $login;
+    // }
 
     public function getUsername()
     {
@@ -50,7 +59,8 @@ class RegisterView extends View
     public function toHTML(): string
     {
         $this->model = $model;
-        $html = '<a href="./">Back to login</a>';
+        $loginUrl = LoginView::$viewUrl;
+        $html = "<a href='{$loginUrl}'>Back to login</a>";
         $message = '';
 
         if ($this->model) {
@@ -122,11 +132,4 @@ class RegisterView extends View
 			</form>
 		';
     }
-
-    //CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
-    private function getRequestUserName()
-    {
-        //RETURN REQUEST VARIABLE: USERNAME
-    }
-
 }
