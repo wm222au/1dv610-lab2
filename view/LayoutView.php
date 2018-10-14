@@ -6,14 +6,10 @@ require_once 'DateTimeView.php';
 
 class LayoutView
 {
-
-    // private $user;
     private $dayTimeView;
 
     public function __construct()
     {
-        // $this->user = $user;
-        $this->loginView = new \View\LoginView();
         $this->dayTimeView = new DateTimeView();
     }
 
@@ -46,13 +42,12 @@ class LayoutView
 
     public function renderIsLoggedIn($isLoggedIn)
     {
-        $logoutName = $this->loginView->getLogoutName();
         if ($isLoggedIn) {
-            return "<h2>Logged in</h2>
-            <form method='post' action='./'>
-                <input type='hidden' name='$logoutName' value='1'/>
-                <input type='submit' value='Logout'>
-            </form>";
+            return "<h2>Logged in</h2>";
+            // <form method='post' action='./'>
+            //     <input type='hidden' name='$logoutName' value='1'/>
+            //     <input type='submit' value='Logout'>
+            // </form>";
         } else {
             return "<h2>Not logged in</h2>";
         }

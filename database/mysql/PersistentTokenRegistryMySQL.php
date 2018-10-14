@@ -2,11 +2,13 @@
 
 namespace Database;
 
-class PersistentTokenRegistryMySQL extends PersistentRegistryMySQL implements \Interfaces\IPersistentRegistry
+class PersistentTokenRegistryMySQL extends PersistentRegistryMySQL
 {
+    private $dbTable = "Tokens";
+
     public function get($token): string
     {
-        $queryString = "SELECT token FROM Tokens WHERE BINARY token = {$token} LIMIT 1";
+        $queryString = "SELECT token FROM {$this->dbTable} WHERE BINARY token = {$token} LIMIT 1";
         $db->query($queryString);
     }
 
@@ -19,6 +21,6 @@ class PersistentTokenRegistryMySQL extends PersistentRegistryMySQL implements \I
     public function add($token)
     {
         $token = "blabla";
-        $queryString = "INSERT INTO Tokens (token) VALUES ($token)";
+        $queryString = "INSERT INTO {$this->dbTable} (token) VALUES ($token)";
     }
 }

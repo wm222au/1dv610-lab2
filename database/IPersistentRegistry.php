@@ -1,6 +1,6 @@
 <?php
 
-namespace Interfaces;
+namespace Database;
 
 interface IPersistentRegistry
 {

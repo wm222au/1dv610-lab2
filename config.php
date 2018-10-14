@@ -2,10 +2,8 @@
 // Locales
 require_once 'env.php';
 
-// Interfaces
-require_once 'interface/IPersistentRegistry.php';
-
 // Database
+require_once 'database/IPersistentRegistry.php';
 require_once 'database/PersistentRegistryFactory.php';
 require_once 'database/PersistentRegistryMySQLFactory.php';
 require_once 'database/mysql/PersistentRegistryMySQL.php';

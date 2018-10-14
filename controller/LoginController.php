@@ -5,31 +5,38 @@ namespace Controller;
 class LoginController extends Controller
 {
     private $view;
+    private $viewModel;
+    private $userSession;
     private $userRegistry;
     private $tokenRegistry;
 
     public function __construct(\Database\PersistentRegistryFactory $factory)
     {
-        $this->viewModel = new \model\LoginViewModel();
-        $this->view = new \View\LoginView();
+        $this->userSession = new \model\Session("User");
         $this->userRegistry = $factory->build($this->getClassName(\Model\User::class));
         $this->tokenRegistry = $factory->build($this->getClassName(\Model\Token::class));
+
+        $this->viewModel = new \model\LoginViewModel();
+        $this->view = new \View\LoginView($this->viewModel, $this->userSession);
     }
 
     public function index(): \View\View
     {
         if ($this->view->userWillLogin()) {
+            var_dump(1);
             return $this->attemptLogin();
         } else if ($this->view->userWillLogout()) {
-            return $this->attemptLogout($this->view->getUserLogout());
+            var_dump(2);
+            return $this->attemptLogout();
         }
+
+        var_dump($this->viewModel->getIsUsernameEmpty(), $this->viewModel->getIsPasswordEmpty(), $this->viewModel->getIsCredentialsWrong());
 
         return $this->showForm();
     }
 
     private function attemptLogin()
     {
-        // set newUser cookie & session via session model
         try {
             $user = $this->view->getUserLogin();
             $this->authenticateClient($user);
@@ -46,11 +53,6 @@ class LoginController extends Controller
 
     private function attemptLogout()
     {
-        // is logged in
-        // if ($loginModel->getIsLoggedIn()) {
-        //     // logout
-
-        // }
         return $this->showForm();
     }
 

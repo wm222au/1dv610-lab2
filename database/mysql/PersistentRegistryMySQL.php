@@ -2,7 +2,7 @@
 
 namespace Database;
 
-abstract class PersistentRegistryMySQL
+abstract class PersistentRegistryMySQL implements \Database\IPersistentRegistry
 {
     private $db;
 

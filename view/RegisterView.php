@@ -6,6 +6,8 @@ class RegisterView extends View
 {
     public static $viewUrl = "register";
 
+    private $viewModel;
+
     private static $register = 'RegisterView::Register';
     private static $name = 'RegisterView::UserName';
     private static $password = 'RegisterView::Password';
@@ -14,8 +16,10 @@ class RegisterView extends View
     private static $cookiePassword = 'RegisterView::CookiePassword';
     private static $messageId = 'RegisterView::Message';
 
-    private $model;
-    private $user;
+    public function __construct(\Model\IViewModel $modelToBeViewed)
+    {
+        $this->viewModel = $modelToBeViewed;
+    }
 
     public function userWillRegister(): bool
     {
@@ -51,18 +55,40 @@ class RegisterView extends View
 
     public function toHTML(): string
     {
-        $this->model = $model;
         $loginUrl = LoginView::$viewUrl;
         $html = "<a href='{$loginUrl}'>Back to login</a>";
         $message = '';
 
-        if ($this->model) {
-            $message .= $this->response();
-        }
-
         $html .= $this->generateRegisterFormHTML($message);
-
         return $html;
+    }
+
+    /**
+     * Create HTTP response
+     *
+     * Should be called after a login attempt has been determined
+     *
+     * @return  void BUT writes to standard output and cookies!
+     */
+    protected function response(): string
+    {
+        $response = '';
+        if ($this->viewModel->getHasLoggedOut()) {
+            $response .= $this->generateLogoutMessage();
+
+        } else if ($this->viewModel->getIsUsernameEmpty()) {
+            $response .= $this->generateUsernameIsEmptyHTML();
+
+        } else if ($this->viewModel->getIsPasswordEmpty()) {
+            $response .= $this->generatePasswordIsEmptyHTML();
+
+        } else if ($this->viewModel->getIsCredentialsWrong()) {
+            $response .= $this->generateWrongCredentialsHTML();
+
+        } else {
+            $response .= $this->generateLoginMessage();
+        }
+        return $response;
     }
 
     private function generateUserRegistered()

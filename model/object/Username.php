@@ -18,7 +18,6 @@ class Username
 
     public function __construct(string $username)
     {
-        var_dump(strlen($username) <= self::$minUsernameLength);
         $this->set($username);
     }
 
@@ -29,7 +28,6 @@ class Username
 
     private function set(string $username)
     {
-        var_dump(strlen($username) <= self::$minUsernameLength);
         if (empty($username)) {
             throw new \Model\UsernameEmptyException();
         } else if (strlen($username) <= self::$minUsernameLength) {
