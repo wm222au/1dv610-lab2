@@ -14,17 +14,9 @@ class PersistentUserRegistryMySQL extends PersistentRegistryMySQL
 
     public function get($user): \Model\User
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->dbTable} WHERE BINARY username = ? LIMIT 1");
-        $stmt->bind_param("s", $user->getUsername());
-        $stmt->execute();
+        $dbUser = $this->getUserAsObject($user);
 
-        $result = $stmt->get_result();
-
-        if ($result->num_rows === 0) {
-            throw new \Database\UserNotFoundException();
-        }
-
-        return $this->createUserFromDbOject($result->fetch_object());
+        return $this->createUserFromDbOject($dbUser);
     }
 
     private function createUserObjectFromAssoc($user)
@@ -38,7 +30,15 @@ class PersistentUserRegistryMySQL extends PersistentRegistryMySQL
     }
 
     public function compare($user): bool
-    {}
+    {
+
+        try {
+            $dbUser = $this->getUserAsObject($user);
+            return $this->comparePasswords($user->getPassword(), $dbUser->password);
+        } catch (Exception $e) {
+            throw new \Exception("DB Error occured");
+        }
+    }
 
     public function add($user)
     {
@@ -58,6 +58,33 @@ class PersistentUserRegistryMySQL extends PersistentRegistryMySQL
         } catch (Exception $e) {
             throw new \Exception("DB Error occured");
         }
+    }
+
+    private function getUserAsObject($user)
+    {
+
+        $db = new \mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
+
+        $stmt = $db->prepare("SELECT password FROM {$this->dbTable} WHERE BINARY username = ? LIMIT 1");
+        $stmt->bind_param("s", $user->getUsername());
+        $stmt->execute();
+
+        $this->checkForErrors($stmt->errno);
+
+        if ($result->num_rows === 0) {
+            throw new \Database\UserNotFoundException();
+        }
+
+        $result = $stmt->get_result();
+
+        $stmt->close();
+
+        return $result->fetch_object();
+    }
+
+    private function comparePasswords($passedPW, $dbPW)
+    {
+        return password_verify($passedPW, $dbPW);
     }
 
     private function checkForErrors($errorNumber)

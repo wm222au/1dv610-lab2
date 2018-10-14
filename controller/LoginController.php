@@ -12,7 +12,7 @@ class LoginController extends Controller
 
     public function __construct(\Database\PersistentRegistryFactory $factory)
     {
-        $this->userSession = new \model\Session("User");
+        $this->userSession = new \model\Session($this->getClassName(\Model\User::class));
         $this->userRegistry = $factory->build($this->getClassName(\Model\User::class));
         $this->tokenRegistry = $factory->build($this->getClassName(\Model\Token::class));
 
@@ -23,14 +23,10 @@ class LoginController extends Controller
     public function index(): \View\View
     {
         if ($this->view->userWillLogin()) {
-            var_dump(1);
             return $this->attemptLogin();
         } else if ($this->view->userWillLogout()) {
-            var_dump(2);
             return $this->attemptLogout();
         }
-
-        var_dump($this->viewModel->getIsUsernameEmpty(), $this->viewModel->getIsPasswordEmpty(), $this->viewModel->getIsCredentialsWrong());
 
         return $this->showForm();
     }
@@ -48,7 +44,10 @@ class LoginController extends Controller
 
     private function authenticateClient($user)
     {
-
+        if ($this->userRegistry->compare($user)) {
+            $this->userSession->saveEntry($user);
+            $this->viewModel->setUserHasLoggedIn();
+        }
     }
 
     private function attemptLogout()

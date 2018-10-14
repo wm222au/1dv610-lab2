@@ -90,8 +90,6 @@ class LoginView extends View
 
     public function toHTML(): string
     {
-        var_dump($this->viewModel->getIsUsernameEmpty(), $this->viewModel->getIsPasswordEmpty(), $this->viewModel->getIsCredentialsWrong());
-
         $registerUrl = RegisterView::$viewUrl;
         $html = "<a href='?{$registerUrl}'>Register a new user</a>";
         $message = $this->response();
@@ -111,6 +109,7 @@ class LoginView extends View
     protected function response(): string
     {
         $response = '';
+
         if ($this->viewModel->getuserHasLoggedOut()) {
             $response .= $this->generateLogoutMessage();
 
@@ -126,6 +125,7 @@ class LoginView extends View
         } else if ($this->viewModel->getuserHasLoggedIn()) {
             $response .= $this->generateLoginMessage();
         }
+
         return $response;
     }
 
