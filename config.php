@@ -12,9 +12,10 @@ require_once 'database/mysql/PersistentUserRegistryMySQL.php';
 
 // Helpers
 require_once 'helpers/AuthUtilities.php';
+require_once 'helpers/PathUtilities.php';
 
 // Controllers
-require_once 'controller/Controller.php';
+require_once 'controller/IController.php';
 require_once 'controller/NavigationController.php';
 require_once 'controller/LoginController.php';
 require_once 'controller/RegisterController.php';

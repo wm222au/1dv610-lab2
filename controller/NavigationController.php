@@ -4,11 +4,13 @@ namespace Controller;
 
 class NavigationController
 {
-    private $view;
     private $db;
+    private $view;
+    private $userSession;
 
     public function __construct(\View\LayoutView $view, $db)
     {
+        $this->userSession = new \model\Session(\helpers\PathUtilities::getClassName(\Model\User::class));
         $this->db = $db;
         $this->view = $view;
     }
@@ -20,12 +22,13 @@ class NavigationController
         } else {
             $controller = $this->createLoginPage();
         }
-        $this->view->render(false, $controller->index());
+
+        $this->view->render($this->userSession, $controller->index());
     }
 
     private function createLoginPage()
     {
-        return new \Controller\LoginController(new \Database\PersistentRegistryMySQLFactory($this->db));
+        return new \Controller\LoginController(new \Database\PersistentRegistryMySQLFactory($this->db), $this->userSession);
     }
 
     private function createRegisterPage()

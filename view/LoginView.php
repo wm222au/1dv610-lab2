@@ -94,7 +94,11 @@ class LoginView extends View
         $html = "<a href='?{$registerUrl}'>Register a new user</a>";
         $message = $this->response();
 
-        $html .= $this->generateLoginFormHTML($message);
+        if ($this->userSession->exists()) {
+            $html .= $this->generateLogoutButtonHTML($message);
+        } else {
+            $html .= $this->generateLoginFormHTML($message);
+        }
 
         return $html;
     }
@@ -168,7 +172,7 @@ class LoginView extends View
 				<p id="' . self::$messageId . '">' . $message . '</p>
 				<input type="submit" name="' . self::$logout . '" value="logout"/>
 			</form>
-		';
+        ';
     }
 
     /**

@@ -65,7 +65,7 @@ class PersistentUserRegistryMySQL extends PersistentRegistryMySQL
 
         $db = new \mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
 
-        $stmt = $db->prepare("SELECT password FROM {$this->dbTable} WHERE BINARY username = ? LIMIT 1");
+        $stmt = $db->prepare("SELECT * FROM {$this->dbTable} WHERE BINARY username = ? LIMIT 1");
         $stmt->bind_param("s", $user->getUsername());
         $stmt->execute();
 

@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-class LoginController extends Controller
+class LoginController implements IController
 {
     private $view;
     private $viewModel;
@@ -10,11 +10,12 @@ class LoginController extends Controller
     private $userRegistry;
     private $tokenRegistry;
 
-    public function __construct(\Database\PersistentRegistryFactory $factory)
+    public function __construct(\Database\PersistentRegistryFactory $factory, \model\Session $userSession)
     {
-        $this->userSession = new \model\Session($this->getClassName(\Model\User::class));
-        $this->userRegistry = $factory->build($this->getClassName(\Model\User::class));
-        $this->tokenRegistry = $factory->build($this->getClassName(\Model\Token::class));
+        $this->userSession = $userSession;
+
+        $this->userRegistry = $factory->build(\helpers\PathUtilities::getClassName(\Model\User::class));
+        $this->tokenRegistry = $factory->build(\helpers\PathUtilities::getClassName(\Model\Token::class));
 
         $this->viewModel = new \model\LoginViewModel();
         $this->view = new \View\LoginView($this->viewModel, $this->userSession);
@@ -47,11 +48,16 @@ class LoginController extends Controller
         if ($this->userRegistry->compare($user)) {
             $this->userSession->saveEntry($user);
             $this->viewModel->setUserHasLoggedIn();
+            // set cookie
         }
     }
 
     private function attemptLogout()
     {
+        $this->userSession->deleteEntry($user);
+        $this->viewModel->setUserHasLoggedOut();
+        // unset cookie
+
         return $this->showForm();
     }
 
