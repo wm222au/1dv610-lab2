@@ -29,5 +29,7 @@ if ($_ENV['environment'] == 'development') {
 
 $db = new mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
 
+var_dump($db->query("SELECT * FROM Users"));
+
 $router = new Router(new \View\LayoutView());
 $router->route();

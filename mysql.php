@@ -47,4 +47,9 @@ class MySQL_Instance
 
         return true;
     }
+
+    private function throwDBError(\Exception $e)
+    {
+
+    }
 }
