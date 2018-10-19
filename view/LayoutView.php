@@ -12,7 +12,6 @@ class LayoutView
 
     public function __construct()
     {
-        // $this->user = $user;
         $this->loginView = new \View\LoginView();
         $this->dayTimeView = new DateTimeView();
     }

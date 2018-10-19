@@ -28,12 +28,22 @@ class LoginView extends View
 
     public function userWillLogin(): bool
     {
+        return $this->willLoginViaForm() || $this->getCookieName() !== null;
+    }
+
+    public function willLoginViaForm(): bool
+    {
         return ($this->getUsername() !== null && $this->getPassword() !== null);
     }
 
     public function getUserLogin(): \Model\Login
     {
-        $user = new \Model\User($this->getUsername(), $this->getPassword());
+        if ($this->willLoginViaForm()) {
+            $user = new \Model\User($this->getUsername(), $this->getPassword());
+
+        } else {
+            // $user =  Cookie
+        }
         $login = new \Model\Login($user);
         return $login;
     }
@@ -47,7 +57,8 @@ class LoginView extends View
 
     public function getCookieName()
     {
-        return self::$cookieName;
+        return $_POST[self::$cookieName];
+
     }
 
     public function getLogoutName()
