@@ -2,10 +2,9 @@
 
 namespace View;
 
-class LoginView extends View
+class LoginView
 {
     private $model;
-    private $userSession;
     private $cookie;
 
     private static $login = 'LoginView::LoginFacade';
@@ -17,8 +16,9 @@ class LoginView extends View
     private static $keep = 'LoginView::KeepMeLoggedIn';
     private static $messageId = 'LoginView::Message';
 
-    public function __construct()
+    public function __construct(\Model\LoginFacade $toBeViewed)
     {
+        $this->model = $toBeViewed;
         $this->cookie = new \View\CookieHandler(self::$cookieName);
     }
 
@@ -87,20 +87,14 @@ class LoginView extends View
         return isset($_POST[self::$keep]);
     }
 
-    public function toHTML($model): string
+    public function toHTML(): string
     {
-        $this->model = $model;
         $html = '<a href="?register">RegisterFacade a new user</a>';
-        $message = '';
 
-        if ($this->model) {
-            $message .= $this->response();
-        }
-
-        if ($this->userSession->exists()) {
-            $html .= $this->generateLogoutButtonHTML($message);
+        if ($this->model->isLoggedIn()){
+            $html .= $this->loginSuccessToHTML();
         } else {
-            $html .= $this->generateLoginFormHTML($message);
+            $html .= $this->generateLoginFormHTML("");
         }
 
         return $html;
@@ -108,7 +102,17 @@ class LoginView extends View
 
     public function loginSuccessToHTML(): string
     {
+        $message = "";
 
+        if($this->model->loggedInByToken()) {
+            $message .= $this->generateTokenLoginMessageHTML();
+        } else {
+            $message .= $this->generateLoginMessageHTML();
+        }
+
+        $html = $this->generateLogoutFormHTML($message);
+
+        return $html;
     }
 
     public function validationErrorToHTML(\Model\UserValidation $invalidUser): string
@@ -128,7 +132,7 @@ class LoginView extends View
         return $html;
     }
 
-    public function loginErrorToHTML(\Helpers\DatabaseFailure $e): string
+    public function loginErrorToHTML(\DatabaseFailure $e): string
     {
         $message = "";
 
@@ -143,12 +147,17 @@ class LoginView extends View
         return $html;
     }
 
-    private function generateLoginMessage()
+    private function generateLoginMessageHTML()
     {
         return 'Welcome';
     }
 
-    private function generateLogoutMessage()
+    private function generateTokenLoginMessageHTML()
+    {
+        return 'Welcome back with cookie';
+    }
+
+    private function generateLogoutMessageHTML()
     {
         return "Bye bye!";
     }

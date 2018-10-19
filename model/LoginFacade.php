@@ -5,55 +5,54 @@ namespace Model;
 class LoginFacade
 {
     private $userRegistry;
-    private $userLogin;
-    private $databaseFailure;
+    private $userSession;
 
-    public function __construct(\Model\DAL\UserDALMySQL $userRegistry)
+    private $loggedInByToken = false;
+
+    public function __construct(\Model\DAL\UserDALMySQL $userRegistry, \Model\SessionHandler $userSession)
     {
         $this->userRegistry = $userRegistry;
+        $this->userSession = $userSession;
     }
 
-    public function getUserLogin(): \Model\UserValidation
+    public function isLoggedIn(): bool
     {
-        return $this->userLogin;
+        $this->userSession->exists();
     }
 
-    public function getDatabaseFailure(): \Helpers\DatabaseFailure
+    public function loggedInByToken(): bool
     {
-        return $this->databaseFailure;
+        return $this->loggedInByToken;
     }
 
-    public function loginUserThrowsOnFail(\Model\UserCredentials $toBeLoggedIn): bool
+    public function loginWithUserThrowsOnFail(\Model\UserCredentials $toBeLoggedIn)
     {
         $user = $toBeLoggedIn->getUser();
 
-        $this->userLogin = new \Model\UserValidation();
-        $this->userLogin->setUsername($user->getUsername());
-        $this->userLogin->setPassword($user->getPassword());
+        $userLogin = new \Model\UserValidation();
+        $userLogin->setUsername($user->getUsername());
+        $userLogin->setPassword($user->getPassword());
 
-        if($this->userLogin.isValid()) {
-            return $this->tryToLoginUser($user);
+        if($userLogin.isValid()) {
+            $this->tryToLoginWithUser($toBeLoggedIn);
         } else {
-            throw new \Exception("User credentials are not valid.");
+            throw new UserValidationFailure($userLogin);
         }
     }
 
-
-    private function tryToLoginUser(\Model\User $userParams): string
+    public function loginWithTokenThrowsOnFail(string $token)
     {
-        try {
-            $this->authorizeUser($userParams);
-        } catch (\DatabaseFailure $e) {
-            return $this->view->showLoginError($e);
+        if($this->userRegistry->compareToken($token)) {
+            $this->loggedInByToken = true;
         }
+
+        return false;
     }
 
-    private function authorizeUser(\Model\User $userParams): string
+    private function tryToLoginWithUser(\Model\UserCredentials $toBeLoggedIn)
     {
-        $token = AuthUtilities::randomString();
-        $this->loginWithUserObject($userParams, $token);
-        if($this->view->userWantsToBeRemembered()) {
-            $this->view->setCookie($token);
+        if($this->userRegistry->compareUser($toBeLoggedIn)) {
+            $this->userRegistry->updateToken($toBeLoggedIn);
         }
     }
 }

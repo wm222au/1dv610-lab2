@@ -2,7 +2,7 @@
 
 namespace Model;
 
-class UserCreationFailure extends \Exception
+class UserValidationFailure extends \Exception
 {
     private $validation;
 
@@ -12,7 +12,7 @@ class UserCreationFailure extends \Exception
         $this->validation = $validation;
     }
 
-    public function getValidation(): \Model\UserValidation
+    public function getUserValidation(): \Model\UserValidation
     {
         return $this->validation;
     }

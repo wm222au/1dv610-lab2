@@ -3,6 +3,7 @@
 namespace Controller;
 
 use Helpers\AuthUtilities;
+use Model\UserValidationFailure;
 
 class LoginController implements Controller
 {
@@ -20,7 +21,7 @@ class LoginController implements Controller
         try {
             $this->handleUserAction();
         } catch(\Exception $e) {
-            error_log($e->getMessage());
+            return $this->determineErrorRendering($e);
         }
 
         return $this->view->toHTML();
@@ -32,10 +33,19 @@ class LoginController implements Controller
             $this->loginViaForm();
         }
         else if ($this->view->userWillLoginViaCookie()) {
-            return $this->loginWithToken($this->view->getCookieToken());
+            $this->loginViaToken();
 
         } else if ($this->view->userWillLogout()) {
-            return $this->logoutUser($this->view->getUserLogout());
+            $this->logoutUser();
+        }
+    }
+
+    private function determineErrorRendering(\Exception $e): string
+    {
+        if ($e instanceof UserValidationFailure) {
+            return $this->view->validationErrorToHTML($e->getUserValidation());
+        } else if ($e instanceof  \DatabaseFailure){
+            return $this->view->loginErrorToHTML($e);
         }
     }
 
@@ -47,10 +57,26 @@ class LoginController implements Controller
         $userCredentials->setUser($user);
         $userCredentials->setToken(AuthUtilities::randomString());
 
-        $this->model->loginUserThrowsOnFail($userCredentials);
+        $this->model->loginWithUserThrowsOnFail($userCredentials);
 
         if($this->view->userWantsToBeRemembered()) {
             $this->view->setCookie($userCredentials->getToken());
         }
+    }
+
+    private function loginViaToken()
+    {
+        $token = $this->view->getCookieToken();
+
+        $this->model->loginWithTokenThrowsOnFail($token);
+
+        $this->view->setCookie($token);
+    }
+
+    private function logoutUser()
+    {
+        // remove token
+        // unset cookie
+        // unset session
     }
 }

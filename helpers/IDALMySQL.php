@@ -20,7 +20,7 @@ class DatabaseFailure extends \Exception
 
     public function noResults(): bool
     {
-        
+        return $this->faultCode == -1;
     }
 }
 
