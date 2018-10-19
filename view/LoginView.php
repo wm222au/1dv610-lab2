@@ -19,7 +19,7 @@ class LoginView extends View
 
     public function __construct()
     {
-        $this->user = new \Model\UserStorage();
+        $this->user = new \Model\SessionHandler();
         $this->cookie = new \View\CookieHandler(self::$cookieName);
     }
 
@@ -124,6 +124,16 @@ class LoginView extends View
         return $response;
     }
 
+    public function showValidationError()
+    {
+
+    }
+
+    public function showRegistrationError()
+    {
+
+    }
+
     private function generateLoginMessage()
     {
         return 'Welcome';
@@ -191,11 +201,4 @@ class LoginView extends View
 			</form>
 		';
     }
-
-    //CREATE GET-FUNCTIONS TO FETCH REQUEST VARIABLES
-    private function getRequestUserName()
-    {
-        //RETURN REQUEST VARIABLE: USERNAME
-    }
-
 }

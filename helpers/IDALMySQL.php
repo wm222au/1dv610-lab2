@@ -2,7 +2,7 @@
 
 namespace Helpers;
 
-class MySQL_Instance
+class MySQL_Instance implements IDAL
 {
     private $connection;
 
@@ -31,7 +31,7 @@ class MySQL_Instance
         $this->connection->close();
     }
 
-    public function query(string $queryString = '')
+    public function query($queryString = '')
     {
         if (!$this->connection || empty($queryString)) {
             return false;

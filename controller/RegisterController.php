@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-class RegisterController
+class RegisterController implements Controller
 {
     private $view;
 
@@ -11,7 +11,7 @@ class RegisterController
         $this->view = new \View\RegisterView();
     }
 
-    public function index()
+    public function index(): string
     {
         if ($this->view->userWillRegister()) {
             return $this->registerAccount($this->view->getRegistration());

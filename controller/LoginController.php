@@ -2,13 +2,15 @@
 
 namespace Controller;
 
-class LoginController extends Controller
+class LoginController implements Controller
 {
     private $view;
+    private $session;
 
-    public function __construct(\View\LoginView $view, \Model\Login $toBeViewed)
+    public function __construct(\View\LoginView $view, \Model\SessionHandler $session)
     {
-        $this->view = new \View\LoginView();
+        $this->view = $view;
+        $this->session = $session;
     }
 
     public function index(): string
@@ -20,6 +22,7 @@ class LoginController extends Controller
         } else if ($this->view->userWillLogout()) {
             return $this->logoutUser($this->view->getUserLogout());
         }
+
         return $this->showForm();
     }
 

@@ -4,8 +4,6 @@ namespace View;
 
 class LayoutView
 {
-
-    // private $user;
     private $dayTimeView;
 
     public function __construct()
@@ -13,7 +11,7 @@ class LayoutView
         $this->dayTimeView = new DateTimeView();
     }
 
-    public function render(\model\UserStorage $user, $view)
+    public function render(\model\SessionHandler $user, $view)
     {
 
         $body = $view->index();

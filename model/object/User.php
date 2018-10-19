@@ -21,7 +21,7 @@ class User
         $this->username = $username;
         $this->password = $password;
 
-        $this->storage = new \Model\UserStorage();
+        $this->storage = new \Model\SessionHandler();
     }
 
     public function getIsLoggedIn(): bool

@@ -24,12 +24,13 @@ require_once 'model/DAL/mysql/PostDALMySQL.php';
 
 require_once 'model/object/User.php';
 require_once 'model/object/Post.php';
-require_once 'model/session/UserStorage.php';
+require_once 'model/session/SessionHandler.php';
 
 require_once 'router.php';
 
 require_once 'helpers/AuthUtilities.php';
-require_once 'helpers/mysql.php';
+require_once 'helpers/IDAL.php';
+require_once 'helpers/IDALMySQL.php';
 
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
 if ($_ENV['environment'] == 'development') {

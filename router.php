@@ -22,7 +22,7 @@ class Router
         $this->loginView = new \View\LoginView();
         $this->registerView = new \View\registerView();
 
-        $this->userSession = new \Model\UserStorage();
+        $this->userSession = new \Model\SessionHandler();
     }
     public function route()
     {

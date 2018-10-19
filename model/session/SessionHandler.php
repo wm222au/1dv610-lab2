@@ -4,9 +4,14 @@ namespace Model;
 
 session_start();
 
-class UserStorage
+class SessionHandler
 {
-    private $sessionKey = "UserStorage";
+    private $sessionKey;
+
+    public function __construct(string $sessionKey)
+    {
+        $this->sessionKey = $sessionKey;
+    }
 
     public function getSessionKey(): string
     {
@@ -22,12 +27,10 @@ class UserStorage
     {
         if ($this->exists()) {
             return $_SESSION[$this->sessionKey];
-        } else {
-            return new \Model\User();
         }
     }
 
-    public function saveEntry(User $toBeSaved)
+    public function saveEntry($toBeSaved)
     {
         $_SESSION[$this->sessionKey] = $toBeSaved;
     }

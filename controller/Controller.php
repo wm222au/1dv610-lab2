@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-abstract class Controller
+interface Controller
 {
-    abstract public function index(): string;
+    public function index(): string;
 }
