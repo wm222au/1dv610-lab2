@@ -5,6 +5,7 @@ namespace View;
 class LoginView extends View
 {
     private $user;
+    private $cookie;
     private $model;
 
     private static $login = 'LoginView::Login';
@@ -19,6 +20,7 @@ class LoginView extends View
     public function __construct()
     {
         $this->user = new \Model\UserStorage();
+        $this->cookie = new \View\CookieHandler(self::$cookieName);
     }
 
     public function userWillLogout(): bool
@@ -26,26 +28,26 @@ class LoginView extends View
         return ($this->getLogout() !== null);
     }
 
-    public function userWillLogin(): bool
-    {
-        return $this->willLoginViaForm() || $this->getCookieName() !== null;
-    }
-
-    public function willLoginViaForm(): bool
+    public function userWillLoginViaForm(): bool
     {
         return ($this->getUsername() !== null && $this->getPassword() !== null);
     }
 
-    public function getUserLogin(): \Model\Login
+    public function userWillLoginViaCookie(): bool
     {
-        if ($this->willLoginViaForm()) {
-            $user = new \Model\User($this->getUsername(), $this->getPassword());
+        return $this->cookie->exists();
+    }
 
-        } else {
-            // $user =  Cookie
-        }
+    public function getUserObject(): \Model\Login
+    {
+        $user = new \Model\User($this->getUsername(), $this->getPassword());
         $login = new \Model\Login($user);
         return $login;
+    }
+
+    public function getCookieToken(): string
+    {
+        return $this->cookie->loadEntry();
     }
 
     public function getUserLogout()
@@ -58,12 +60,6 @@ class LoginView extends View
     public function getCookieName()
     {
         return $_POST[self::$cookieName];
-
-    }
-
-    public function getLogoutName()
-    {
-        return self::$logout;
     }
 
     public function getLogout()

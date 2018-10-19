@@ -2,8 +2,6 @@
 
 namespace View;
 
-require_once 'DateTimeView.php';
-
 class LayoutView
 {
 
@@ -12,7 +10,6 @@ class LayoutView
 
     public function __construct()
     {
-        $this->loginView = new \View\LoginView();
         $this->dayTimeView = new DateTimeView();
     }
 
