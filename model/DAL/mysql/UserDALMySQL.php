@@ -3,9 +3,9 @@
 namespace Model\DAL;
 
 
-class UserDALMySQL extends \DALMySQL implements \Model\DAL\IUserDAL
+class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
 {
-    private $dbTable = "Users";
+    protected $dbTable = "Users";
 
     public function getById(string $id): array
     {
@@ -45,11 +45,15 @@ class UserDALMySQL extends \DALMySQL implements \Model\DAL\IUserDAL
         }
     }
 
-    public function compareUser(\Model\User $user): bool
+    public function compareUser(\Model\UserCredentials $userCredentials): bool
     {
         try {
+            $user = $userCredentials->getUser();
+
             $dbUser = $this->queryWithUsername($user->getUsername());
+
             return password_verify($user->getPassword(), $dbUser['password']);
+
         } catch (Exception $e) {
             throw new \DatabaseFailure(0);
         }
@@ -67,7 +71,8 @@ class UserDALMySQL extends \DALMySQL implements \Model\DAL\IUserDAL
     public function updateToken(\Model\UserCredentials $userCredentials)
     {
         $token = $userCredentials->getToken();
-        $username = $userCredentials->getUsername();
+        $user = $userCredentials->getUser();
+        $username = $user->getUsername();
 
         try {
             $stmt = $this->db->prepare("UPDATE {$this->dbTable} SET token=? WHERE username=?");

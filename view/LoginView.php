@@ -89,7 +89,7 @@ class LoginView
 
     public function toHTML(): string
     {
-        $html = '<a href="?register">RegisterFacade a new user</a>';
+        $html = '<a href="?register">Register a new user</a>';
 
         if ($this->model->isLoggedIn()){
             $html .= $this->loginSuccessToHTML();
@@ -110,7 +110,7 @@ class LoginView
             $message .= $this->generateLoginMessageHTML();
         }
 
-        $html = $this->generateLogoutFormHTML($message);
+        $html = $this->generateLogoutButtonHTML($message);
 
         return $html;
     }
@@ -207,7 +207,7 @@ class LoginView
         return '
 			<form method="post" >
 				<fieldset>
-					<legend>LoginFacade - enter Username and password</legend>
+					<legend>Login - enter Username and password</legend>
 					<p id="' . self::$messageId . '">' . $message . '</p>
 
 					<label for="' . self::$name . '">Username :</label>

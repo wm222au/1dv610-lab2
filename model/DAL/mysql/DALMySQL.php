@@ -1,6 +1,6 @@
 <?php
 
-namespace \Model\DAL;
+namespace Model\DAL;
 
 class DatabaseFailure extends \Exception
 {
@@ -29,7 +29,7 @@ class DALMySQL
     protected $db;
     protected $dbTable = "";
 
-    public function __construct(mysqli $database)
+    public function __construct(\mysqli $database)
     {
         $this->db = $database;
     }

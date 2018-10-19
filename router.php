@@ -9,11 +9,15 @@ function RouterRedirect($url, $permanent = false)
 
 class Router
 {
+    private static $registerUrl = 'register';
+    private static $postUrl = 'guestbook';
+
     private $layoutView;
-    private $contentView;
     private $db;
 
     private $userSession;
+
+    private $contentView;
 
     public function __construct(\View\LayoutView $layoutView, mysqli $database)
     {
@@ -26,17 +30,20 @@ class Router
     public function route()
     {
         if (!empty($_GET)) {
-            if (isset($_GET['register'])) {
-                // reg form
+            if (isset($_GET[self::$registerUrl])) {
                 $this->contentView = new \Controller\RegisterController();
-            } else if(isset($_GET['posts'])) {
+
+            } else if(isset($_GET[self::$postUrl])) {
                 $this->contentView = new \Controller\PostController();
+
             } else {
-                echo "404 not found";
+                echo "404 – not found";
             }
         } else {
-            $model = new \Model\LoginFacade($this->userSession);
-            $view = new \View\LoginView();
+            $userRegistry = new \Model\DAL\UserDALMySQL($this->db);
+
+            $model = new \Model\LoginFacade($userRegistry, $this->userSession);
+            $view = new \View\LoginView($model);
             $this->contentView = new \Controller\LoginController($view, $model);
         }
 

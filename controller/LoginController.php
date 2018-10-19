@@ -59,9 +59,12 @@ class LoginController implements Controller
 
         $this->model->loginWithUserThrowsOnFail($userCredentials);
 
+        // We set token either way, but only save to client if user wishes to
         if($this->view->userWantsToBeRemembered()) {
             $this->view->setCookie($userCredentials->getToken());
         }
+
+        $this->createSession($userCredentials);
     }
 
     private function loginViaToken()
@@ -71,6 +74,14 @@ class LoginController implements Controller
         $this->model->loginWithTokenThrowsOnFail($token);
 
         $this->view->setCookie($token);
+
+        $this->createSession(new \Model\UserCredentials());
+    }
+
+    private function createSession(\Model\UserCredentials $toBeSaved)
+    {
+        $userSession = $this->model->getSessionHandler();
+        $userSession->saveEntry($toBeSaved);
     }
 
     private function logoutUser()

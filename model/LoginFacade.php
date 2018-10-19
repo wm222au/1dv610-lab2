@@ -15,9 +15,14 @@ class LoginFacade
         $this->userSession = $userSession;
     }
 
+    public function getSessionHandler(): \Model\SessionHandler
+    {
+        return $this->userSession;
+    }
+
     public function isLoggedIn(): bool
     {
-        $this->userSession->exists();
+        return $this->userSession->exists();
     }
 
     public function loggedInByToken(): bool
@@ -33,7 +38,9 @@ class LoginFacade
         $userLogin->setUsername($user->getUsername());
         $userLogin->setPassword($user->getPassword());
 
-        if($userLogin.isValid()) {
+        var_dump($userLogin->isValid());
+
+        if($userLogin->isValid()) {
             $this->tryToLoginWithUser($toBeLoggedIn);
         } else {
             throw new UserValidationFailure($userLogin);

@@ -6,7 +6,7 @@ interface IUserDAL
 {
     public function getById(string $id): array;
     public function add(\Model\UserCredentials $userCredentials);
-    public function compareUser(\Model\User $user): bool;
+    public function compareUser(\Model\UserCredentials $user): bool;
     public function compareToken(string $token): bool;
     public function updateToken(\Model\UserCredentials $userCredentials);
 }
