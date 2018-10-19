@@ -20,7 +20,7 @@ class LayoutView
       <html lang="en">
         <head>
           <meta charset="utf-8">
-          <title>Login Example</title>
+          <title>LoginFacade Example</title>
         </head>
         <body>
           <h1>Assignment 3</h1>

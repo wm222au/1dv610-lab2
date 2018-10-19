@@ -20,7 +20,7 @@ class RegisterController implements Controller
         }
     }
 
-    public function registerAccount(\Model\Register $registerModel)
+    public function registerAccount(\Model\RegisterFacade $registerModel)
     {
         if ($registerModel->registerUser()) {
             $login = $this->view->getUserLogin();

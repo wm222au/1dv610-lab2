@@ -2,6 +2,28 @@
 
 namespace Helpers;
 
+class DatabaseFailure extends \Exception
+{
+    private $faultCode;
+
+    public function __construct(int $errNo, string $message = "Something went wrong", int $code = 0, \Throwable $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+
+        $this->faultCode = $errNo;
+    }
+
+    public function isDuplicate(): bool
+    {
+        return $this->faultCode == 1062;
+    }
+
+    public function noResults(): bool
+    {
+        
+    }
+}
+
 class MySQL_Instance implements IDAL
 {
     private $connection;

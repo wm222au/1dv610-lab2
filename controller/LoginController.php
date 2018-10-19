@@ -2,62 +2,55 @@
 
 namespace Controller;
 
+use Helpers\AuthUtilities;
+
 class LoginController implements Controller
 {
     private $view;
-    private $session;
+    private $model;
 
-    public function __construct(\View\LoginView $view, \Model\SessionHandler $session)
+    public function __construct(\View\LoginView $view, \Model\LoginFacade $toBeViewed)
     {
         $this->view = $view;
-        $this->session = $session;
+        $this->model = $toBeViewed;
     }
 
     public function index(): string
     {
+        try {
+            $this->handleUserAction();
+        } catch(\Exception $e) {
+            error_log($e->getMessage());
+        }
+
+        return $this->view->toHTML();
+    }
+
+    private function handleUserAction()
+    {
         if ($this->view->userWillLoginViaForm()) {
-            return $this->loginWithCredentials($this->view->getUserObject());
-        } else if ($this->view->userWillLoginViaCookie()) {
+            $this->loginViaForm();
+        }
+        else if ($this->view->userWillLoginViaCookie()) {
             return $this->loginWithToken($this->view->getCookieToken());
+
         } else if ($this->view->userWillLogout()) {
             return $this->logoutUser($this->view->getUserLogout());
         }
-
-        return $this->showForm();
     }
 
-    private function loginWithCredentials(\Model\Login $loginModel)
+    private function loginViaForm()
     {
-        $loginModel->loginUser();
-        return $this->view->toHTML($loginModel);
-    }
+        $user = $this->view->getUserObject();
 
-    private function loginWithToken(string $token)
-    {
-        // create token either way
-        $token = \Helpers\AuthUtilities::randomString();
+        $userCredentials = new \Model\UserCredentials();
+        $userCredentials->setUser($user);
+        $userCredentials->setToken(AuthUtilities::randomString());
 
-        // only store cookie if user requested it
-        if ($this->view->userWillBeRemembered()) {
-            $this->view->remeberUserWithToken($token);
+        $this->model->loginUserThrowsOnFail($userCredentials);
+
+        if($this->view->userWantsToBeRemembered()) {
+            $this->view->setCookie($userCredentials->getToken());
         }
-
-        // try to login user
-
-    }
-
-    private function logoutUser(\Model\Login $loginModel)
-    {
-        if ($loginModel->getIsLoggedIn()) {
-            $loginModel->logoutUser();
-            return $this->view->toHTML($loginModel);
-        } else {
-            return $this->showForm();
-        }
-    }
-
-    private function showForm(): string
-    {
-        return $this->view->toHTML(null);
     }
 }

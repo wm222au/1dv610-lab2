@@ -1,6 +1,9 @@
 <?php
 
-class UserDALMySQL implements \Model\IUserDAL
+namespace Model\DAL;
+
+
+class UserDALMySQL implements \Model\DAL\IUserDAL
 {
     private $db;
 

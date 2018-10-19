@@ -2,50 +2,19 @@
 
 namespace Model;
 
-use Exception;
-
 class User
 {
-    private $username;
-    private $password;
-
-    private $storage;
-
-    private static $hashOptions = ['cost' => 12];
-
-    public static $minUsernameLength = 3;
-    public static $minPasswordLength = 6;
-
-    public function __construct(string $username = '', string $password = '')
-    {
-        $this->username = $username;
-        $this->password = $password;
-
-        $this->storage = new \Model\SessionHandler();
-    }
-
-    public function getIsLoggedIn(): bool
-    {
-        return $this->storage->exists();
-    }
-
-    public function getUser(): \Model\User
-    {
-        return $this->storage->loadEntry();
-    }
+    protected $username;
+    protected $password;
 
     public function getUsername(): string
     {
         return $this->username;
     }
 
-    private function setUsername($username)
+    public function setUsername($username)
     {
-        if ($this->isUsernameValid($username)) {
-            $this->username = $username;
-        } else {
-            throw new Exception("Username didn't fulfill conditions.");
-        }
+        $this->username = $username;
     }
 
     public function getPassword(): string
@@ -53,94 +22,8 @@ class User
         return $this->password;
     }
 
-    private function setPassword($password)
+    public function setPassword($password)
     {
-        if ($this->isPasswordValid($password)) {
-            $this->password = $password;
-        } else {
-            throw new Exception("Password didn't fulfill conditions.");
-        }
-    }
-
-    public function isUsernameEmpty(): bool
-    {
-        return empty($this->username);
-    }
-
-    public function isPasswordEmpty(): bool
-    {
-        return empty($this->password);
-    }
-
-    public function isUsernameValid(): bool
-    {
-        return (strlen($this->username) >= self::$minUsernameLength);
-    }
-
-    public function isPasswordValid(): bool
-    {
-        return (strlen($this->password) >= self::$minPasswordLength);
-    }
-
-    private static function hash(string $clearTextPassword): string
-    {
-        return password_hash($clearTextPassword, PASSWORD_BCRYPT, SELF::$hashOptions);
-    }
-
-    public function registerUserToDatabase(): bool
-    {
-        if (!$this->isUsernameValid() || !$this->isPasswordValid()) {
-            throw new Exception('User credentials is not valid.');
-        }
-
-        global $db;
-
-        $hashedPassword = self::hash($this->password);
-
-        $escapedUsername = $db->real_escape_string($this->username);
-        $queryString = "INSERT INTO Users (username, password, token) VALUES ('$escapedUsername', '$hashedPassword', 'blabla')";
-
-        return $db->query($queryString);
-    }
-
-    public function loginUser(): bool
-    {
-        global $db;
-
-        $escapedUsername = $db->real_escape_string($this->username);
-        $queryString = "SELECT * FROM Users WHERE BINARY username = '" . $escapedUsername . "' LIMIT 1";
-        $result = $db->query($queryString);
-
-        if ($result && $result->num_rows > 0) {
-            $user = $result->fetch_assoc();
-
-            if (password_verify($this->password, $user['password'])) {
-                $this->setUsername($user['username']);
-                $this->setPassword($user['password']);
-                $this->storage->saveEntry($this);
-            } else {
-                throw new Exception('Password did not match.');
-            }
-
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public function logoutUser(): bool
-    {
-        try {
-            $this->storage->deleteEntry();
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-
-    public function isUserLoggedIn(): bool
-    {
-        // Check if this class equals cookie(?)
-        return true;
+        $this->password = $password;
     }
 }

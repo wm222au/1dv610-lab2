@@ -4,11 +4,11 @@ namespace View;
 
 class LoginView extends View
 {
-    private $user;
-    private $cookie;
     private $model;
+    private $userSession;
+    private $cookie;
 
-    private static $login = 'LoginView::Login';
+    private static $login = 'LoginView::LoginFacade';
     private static $logout = 'LoginView::Logout';
     private static $name = 'LoginView::UserName';
     private static $password = 'LoginView::Password';
@@ -19,7 +19,6 @@ class LoginView extends View
 
     public function __construct()
     {
-        $this->user = new \Model\SessionHandler();
         $this->cookie = new \View\CookieHandler(self::$cookieName);
     }
 
@@ -38,11 +37,12 @@ class LoginView extends View
         return $this->cookie->exists();
     }
 
-    public function getUserObject(): \Model\Login
+    public function getUserObject(): \Model\User
     {
         $user = new \Model\User($this->getUsername(), $this->getPassword());
-        $login = new \Model\Login($user);
-        return $login;
+        $user->setUsername($this->getUsername());
+        $user->setPassword($this->getPassword());
+        return $user;
     }
 
     public function getCookieToken(): string
@@ -53,13 +53,18 @@ class LoginView extends View
     public function getUserLogout()
     {
         $user = new \Model\User();
-        $login = new \Model\Login($user->getUser());
+        $login = new \Model\LoginFacade($user->getUser());
         return $login;
     }
 
     public function getCookieName()
     {
         return $_POST[self::$cookieName];
+    }
+
+    public function setCookie(string $data)
+    {
+        $this->cookie->saveEntry($data);
     }
 
     public function getLogout()
@@ -77,61 +82,65 @@ class LoginView extends View
         return $_POST[self::$password];
     }
 
+    public function userWantsToBeRemembered(): bool
+    {
+        return isset($_POST[self::$keep]);
+    }
+
     public function toHTML($model): string
     {
         $this->model = $model;
-        $html = '<a href="?register">Register a new user</a>';
+        $html = '<a href="?register">RegisterFacade a new user</a>';
         $message = '';
 
         if ($this->model) {
             $message .= $this->response();
         }
 
-        if ($this->user->exists()) {
+        if ($this->userSession->exists()) {
             $html .= $this->generateLogoutButtonHTML($message);
         } else {
             $html .= $this->generateLoginFormHTML($message);
         }
 
         return $html;
+    }
+
+    public function loginSuccessToHTML(): string
+    {
 
     }
 
-    /**
-     * Create HTTP response
-     *
-     * Should be called after a login attempt has been determined
-     *
-     * @return  void BUT writes to standard output and cookies!
-     */
-
-    protected function response(): string
+    public function validationErrorToHTML(\Model\UserValidation $invalidUser): string
     {
-        $response = '';
-
-        if ($this->model->getIsLoggedOut()) {
-            $response .= $this->generateLogoutMessage();
-        } else if ($this->model->getIsUsernameEmpty()) {
-            $response .= $this->generateUsernameIsEmptyHTML();
-        } else if ($this->model->getIsPasswordEmpty()) {
-            $response .= $this->generatePasswordIsEmptyHTML();
-        } else if (!$this->model->getIsAuthenticated()) {
-            $response .= $this->generateWrongCredentialsHTML();
+        $message = "";
+        
+        if($invalidUser->isUsernameEmpty()) {
+            $message .= $this->generateUsernameIsEmptyHTML();
+        } else if ($invalidUser->isPasswordEmpty()) {
+            $message .= $this->generatePasswordIsEmptyHTML();
         } else {
-            $response .= $this->generateLoginMessage();
+            $message .= $this->generateWrongCredentialsHTML();
         }
 
-        return $response;
+        $html = $this->generateLoginFormHTML($message);
+        
+        return $html;
     }
 
-    public function showValidationError()
+    public function loginErrorToHTML(\Helpers\DatabaseFailure $e): string
     {
+        $message = "";
 
-    }
+        if ($e->noResults()) {
+            $message .= $this->generateWrongCredentialsHTML();
+        } else {
+            $message .= $this->generateUnknownErrorHTML();
+        }
 
-    public function showRegistrationError()
-    {
+        $html = $this->generateLoginFormHTML($message);
 
+        return $html;
     }
 
     private function generateLoginMessage()
@@ -154,9 +163,14 @@ class LoginView extends View
         return 'Password is missing';
     }
 
-    private function generateWrongCredentialsHTML()
+    private function generateWrongCredentialsHTML(): string
     {
         return 'Wrong name or password';
+    }
+
+    private function generateUnknownErrorHTML(): string
+    {
+        return 'An error occurred. Please try again.';
     }
 
     /**
@@ -184,7 +198,7 @@ class LoginView extends View
         return '
 			<form method="post" >
 				<fieldset>
-					<legend>Login - enter Username and password</legend>
+					<legend>LoginFacade - enter Username and password</legend>
 					<p id="' . self::$messageId . '">' . $message . '</p>
 
 					<label for="' . self::$name . '">Username :</label>

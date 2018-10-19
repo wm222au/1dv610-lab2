@@ -4,7 +4,7 @@ namespace View;
 
 class RegisterView extends View
 {
-    private static $register = 'RegisterView::Register';
+    private static $register = 'RegisterView::RegisterFacade';
     private static $name = 'RegisterView::UserName';
     private static $password = 'RegisterView::Password';
     private static $passwordRepeat = 'RegisterView::PasswordRepeat';
@@ -25,17 +25,17 @@ class RegisterView extends View
         return ($this->getUsername() !== null && $this->getPassword() !== null && $this->getPasswordRepeat() !== null);
     }
 
-    public function getRegistration(): \Model\Register
+    public function getRegistration(): \Model\RegisterFacade
     {
         $user = new \Model\User($this->getUsername(), $this->getPassword());
-        $register = new \Model\Register($user, $this->getPasswordRepeat());
+        $register = new \Model\RegisterFacade($user, $this->getPasswordRepeat());
         return $register;
     }
 
-    public function getUserLogin(): \Model\Login
+    public function getUserLogin(): \Model\LoginFacade
     {
         $user = new \Model\User($this->getUsername(), $this->getPassword());
-        $login = new \Model\Login($user);
+        $login = new \Model\LoginFacade($user);
         return $login;
     }
 
@@ -142,7 +142,7 @@ class RegisterView extends View
         return '
 			<form method="post" >
 				<fieldset>
-					<legend>Register a new user - Write username and password</legend>
+					<legend>RegisterFacade a new user - Write username and password</legend>
 					<p id="' . self::$messageId . '">' . $message . '</p>
 
           <p>
@@ -156,7 +156,7 @@ class RegisterView extends View
 					<label for="' . self::$passwordRepeat . '">Repeat Password :</label>
 					<input type="password" id="' . self::$passwordRepeat . '" name="' . self::$passwordRepeat . '" value="' . $this->getPasswordRepeat() . '" />
 
-          <input type="submit" name="' . self::$register . '" value="Register" />
+          <input type="submit" name="' . self::$register . '" value="RegisterFacade" />
 				</fieldset>
 			</form>
 		';
