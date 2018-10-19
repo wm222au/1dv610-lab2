@@ -17,7 +17,7 @@ class LayoutView
         $this->dayTimeView = new DateTimeView();
     }
 
-    public function render($user, $view)
+    public function render(\model\UserStorage $user, $view)
     {
 
         $body = $view->index();
@@ -30,7 +30,11 @@ class LayoutView
         </head>
         <body>
           <h1>Assignment 2</h1>
-          ' . $this->renderIsLoggedIn($user->getIsLoggedIn()) . '
+          <ul>
+            <li><a href="./">Home</a></li>
+            <li><a href="./?guestbook">Guest book</a></li>
+          </ul>
+          ' . $this->renderIsLoggedIn($user->exists()) . '
 
           <div class="container">
               ' . $body . '
@@ -44,13 +48,8 @@ class LayoutView
 
     private function renderIsLoggedIn($isLoggedIn)
     {
-        $logoutName = $this->loginView->getLogoutName();
         if ($isLoggedIn) {
-            return "<h2>Logged in</h2>
-            <form method='post' action='./'>
-                <input type='hidden' name='$logoutName' value='1'/>
-                <input type='submit' value='Logout'>
-            </form>";
+            return "<h2>Logged in</h2>";
         } else {
             return "<h2>Not logged in</h2>";
         }

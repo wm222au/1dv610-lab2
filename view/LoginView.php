@@ -18,7 +18,7 @@ class LoginView extends View
 
     public function __construct()
     {
-        // $this->user = $toBeViewed;
+        $this->user = new \Model\UserStorage();
     }
 
     public function userWillLogout(): bool
@@ -80,7 +80,11 @@ class LoginView extends View
             $message .= $this->response();
         }
 
-        $html .= $this->generateLoginFormHTML($message);
+        if ($this->user->exists()) {
+            $html .= $this->generateLogoutButtonHTML($message);
+        } else {
+            $html .= $this->generateLoginFormHTML($message);
+        }
 
         return $html;
 

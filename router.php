@@ -14,7 +14,7 @@ class Router
     private $loginView;
     private $registerView;
 
-    private $user;
+    private $userSession;
 
     public function __construct($layoutView)
     {
@@ -22,7 +22,7 @@ class Router
         $this->loginView = new \View\LoginView();
         $this->registerView = new \View\registerView();
 
-        $this->user = new \Model\User();
+        $this->userSession = new \Model\UserStorage();
     }
     public function route()
     {
@@ -36,6 +36,6 @@ class Router
             $this->contentView = new \Controller\LoginController();
         }
 
-        echo $this->layoutView->render($this->user->getUser(), $this->contentView);
+        echo $this->layoutView->render($this->userSession, $this->contentView);
     }
 }

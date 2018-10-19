@@ -1,5 +1,7 @@
 <?php
 
+namespace Helpers;
+
 class MySQL_Instance
 {
     private $connection;
