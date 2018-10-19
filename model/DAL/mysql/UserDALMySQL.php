@@ -8,4 +8,14 @@ class UserDALMySQL implements \Model\IUserDAL
     {
         $this->db = $database;
     }
+
+    public function getAll(): array
+    {
+
+    }
+
+    public function get(): array
+    {
+
+    }
 }

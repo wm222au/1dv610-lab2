@@ -29,7 +29,7 @@ class LayoutView
           <title>Login Example</title>
         </head>
         <body>
-          <h1>Assignment 2</h1>
+          <h1>Assignment 3</h1>
           <ul>
             <li><a href="./">Home</a></li>
             <li><a href="./?guestbook">Guest book</a></li>
