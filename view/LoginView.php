@@ -67,6 +67,11 @@ class LoginView
         $this->cookie->saveEntry($data);
     }
 
+    public function unsetCookie()
+    {
+        $this->cookie->deleteEntry();
+    }
+
     public function getLogout()
     {
         return $_POST[self::$logout];

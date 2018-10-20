@@ -15,11 +15,6 @@ class LoginFacade
         $this->userSession = $userSession;
     }
 
-    public function getSessionHandler(): \Model\SessionHandler
-    {
-        return $this->userSession;
-    }
-
     public function isLoggedIn(): bool
     {
         return $this->userSession->exists();
@@ -28,6 +23,11 @@ class LoginFacade
     public function loggedInByToken(): bool
     {
         return $this->loggedInByToken;
+    }
+
+    public function logoutUser()
+    {
+        $this->userSession->deleteEntry();
     }
 
     public function loginWithUserThrowsOnFail(\Model\UserCredentials $toBeLoggedIn)
@@ -51,6 +51,7 @@ class LoginFacade
     {
         if($this->userRegistry->compareToken($token)) {
             $this->loggedInByToken = true;
+            $this->userSession->saveEntry(new \Model\UserCredentials());
         }
 
         return false;
@@ -60,6 +61,7 @@ class LoginFacade
     {
         if($this->userRegistry->compareUser($toBeLoggedIn)) {
             $this->userRegistry->updateToken($toBeLoggedIn);
+            $this->userSession->saveEntry($toBeLoggedIn);
         }
     }
 }
