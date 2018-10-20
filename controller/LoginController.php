@@ -32,7 +32,7 @@ class LoginController implements Controller
         if ($this->view->userWillLoginViaForm()) {
             $this->loginViaForm();
         }
-        else if ($this->view->userWillLoginViaCookie()) {
+        else if ($this->view->userWillLoginViaCookie() && !$this->model->isLoggedIn()) {
             $this->loginViaToken();
 
         } else if ($this->view->userWillLogout()) {
@@ -76,10 +76,7 @@ class LoginController implements Controller
 
     private function logoutUser()
     {
-        // remove token
-        // unset cookie
-        $this->view->unsetCookie();
-        // unset session
         $this->model->logoutUser();
+        $this->view->unsetCookie();
     }
 }

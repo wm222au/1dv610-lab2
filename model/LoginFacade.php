@@ -38,8 +38,6 @@ class LoginFacade
         $userLogin->setUsername($user->getUsername());
         $userLogin->setPassword($user->getPassword());
 
-        var_dump($userLogin->isValid());
-
         if($userLogin->isValid()) {
             $this->tryToLoginWithUser($toBeLoggedIn);
         } else {

@@ -5,11 +5,9 @@ namespace Model\DAL;
 
 class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
 {
-    protected $dbTable = "Users";
-
     public function getById(string $id): array
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->dbTable} WHERE id = ? LIMIT 1");
+        $stmt = $this->db->prepare("SELECT * FROM Users WHERE id = ? LIMIT 1");
         $stmt->bind_param("s", $id);
         $stmt->execute();
 
@@ -33,7 +31,7 @@ class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
         $hashedPassword = \Helpers\AuthUtilities::hash($userCredentials->getPassword());
 
         try {
-            $stmt = $this->db->prepare("INSERT INTO {$this->dbTable} (username, password, token) VALUES (?, ?, ?)");
+            $stmt = $this->db->prepare("INSERT INTO Users (username, password, token) VALUES (?, ?, ?)");
             $stmt->bind_param("sss", $username, $hashedPassword, $token);
             $stmt->execute();
 
@@ -62,7 +60,7 @@ class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
     public function compareToken(string $token): bool
     {
         try {
-            return $this->queryWithToken($token);
+            return !empty($this->queryWithToken($token));
         } catch (Exception $e) {
             throw new \DatabaseFailure(0);
         }
@@ -75,7 +73,7 @@ class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
         $username = $user->getUsername();
 
         try {
-            $stmt = $this->db->prepare("UPDATE {$this->dbTable} SET token=? WHERE username=?");
+            $stmt = $this->db->prepare("UPDATE Users SET token=? WHERE username=?");
             $stmt->bind_param("ss", $token, $username);
             $stmt->execute();
 
@@ -89,7 +87,7 @@ class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
 
     private function queryWithUsername(string $username)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->dbTable} WHERE BINARY username = ? LIMIT 1");
+        $stmt = $this->db->prepare("SELECT * FROM Users WHERE BINARY username = ? LIMIT 1");
         $stmt->bind_param("s", $username);
         $stmt->execute();
 
@@ -108,7 +106,7 @@ class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
 
     private function queryWithToken(string $token)
     {
-        $stmt = $this->db->prepare("SELECT * FROM {$this->dbTable} WHERE BINARY token= ? LIMIT 1");
+        $stmt = $this->db->prepare("SELECT * FROM Users WHERE BINARY token= ? LIMIT 1");
         $stmt->bind_param("s", $token);
         $stmt->execute();
 

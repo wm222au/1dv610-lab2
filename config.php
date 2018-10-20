@@ -9,12 +9,15 @@ require_once 'view/LayoutView.php';
 require_once 'view/DateTimeView.php';
 require_once 'view/LoginView.php';
 require_once 'view/RegisterView.php';
+require_once 'view/PostView.php';
 
 require_once 'controller/Controller.php';
 require_once 'controller/LoginController.php';
 require_once 'controller/RegisterController.php';
+require_once 'controller/PostController.php';
 
 require_once 'model/LoginFacade.php';
+require_once 'model/PostFacade.php';
 
 require_once 'model/DAL/IUserDAL.php';
 require_once 'model/DAL/IPostDAL.php';

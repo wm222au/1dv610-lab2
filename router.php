@@ -34,7 +34,11 @@ class Router
                 $this->contentView = new \Controller\RegisterController();
 
             } else if(isset($_GET[self::$postUrl])) {
-                $this->contentView = new \Controller\PostController();
+                $postRegistry = new \Model\DAL\PostDALMySQL($this->db);
+
+                $model = new \Model\PostFacade($postRegistry, $this->userSession);
+                $view = new \View\PostView($model);
+                $this->contentView = new \Controller\PostController($view, $model);
 
             } else {
                 echo "404 – not found";
