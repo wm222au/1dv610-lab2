@@ -118,7 +118,7 @@ class LoginView extends FormView
             $message .= $this->generateLoginMessageHTML();
         }
 
-        $html = $this->generateLogoutButtonHTML($message);
+        $html = $this->generateLogoutButtonHTML($this->model->wasLoggedOut() ? $this->generateLogoutMessageHTML() : "");
 
         return $html;
     }
@@ -146,11 +146,7 @@ class LoginView extends FormView
     {
         $message = "";
 
-        if ($e instanceof WrongLoginCredentials) {
-            $message .= $this->generateWrongCredentialsHTML();
-        } else {
-            $message .= $this->generateUnknownErrorHTML();
-        }
+        $message .= $this->generateWrongCredentialsHTML();
 
         $html = $this->generateLoginFormHTML($message);
 

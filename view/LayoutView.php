@@ -52,7 +52,6 @@ class LayoutView implements View
         $postUrl = $router::$postUrl;
 
         $html = "<ul>";
-        var_dump($_GET);
 
         if (!empty($_GET)) {
             $html .= "<li><a href=." . $homeUrl . ">Back to login</a></li>";
