@@ -3,6 +3,7 @@
 namespace Controller;
 
 use Helpers\AuthUtilities;
+use Model\DAL\DatabaseFailure;
 use Model\UserValidationFailure;
 
 class LoginController implements Controller
@@ -20,8 +21,10 @@ class LoginController implements Controller
     {
         try {
             $this->handleUserAction();
-        } catch(\Exception $e) {
-            return $this->determineErrorRendering($e);
+        } catch(\Exception $exception) {
+            return $this->determineErrorRendering($exception);
+        } catch (\Error $error) {
+            return $this->determineErrorRendering(new DatabaseFailure(-1));
         }
 
         return $this->view->toHTML();
@@ -44,7 +47,7 @@ class LoginController implements Controller
     {
         if ($e instanceof UserValidationFailure) {
             return $this->view->validationErrorToHTML($e->getUserValidation());
-        } else if ($e instanceof  \DatabaseFailure){
+        } else if ($e instanceof  DatabaseFailure){
             return $this->view->loginErrorToHTML($e);
         }
         return $this->view->toHTML();

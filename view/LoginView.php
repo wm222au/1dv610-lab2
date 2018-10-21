@@ -2,6 +2,8 @@
 
 namespace View;
 
+use Model\DAL\DatabaseFailure;
+
 class LoginView extends FormView
 {
     private $model;
@@ -139,7 +141,7 @@ class LoginView extends FormView
         return $html;
     }
 
-    public function loginErrorToHTML(\DatabaseFailure $e): string
+    public function loginErrorToHTML(DatabaseFailure $e): string
     {
         $message = "";
 
