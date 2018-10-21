@@ -5,6 +5,7 @@ require_once 'env.php';
 
 require_once 'view/CookieHandler.php';
 require_once 'view/View.php';
+require_once 'view/FormView.php';
 require_once 'view/LayoutView.php';
 require_once 'view/DateTimeView.php';
 require_once 'view/LoginView.php';

@@ -3,7 +3,10 @@
 namespace View;
 
 
-class PostView
+use Model\PostValidation;
+use Model\PostValidationFailure;
+
+class PostView extends FormView
 {
     private $model;
 
@@ -61,7 +64,46 @@ class PostView
         return $_POST[self::$content];
     }
 
-    public function toHTML()
+    public function validationErrorToHTML(\Model\PostValidation $validation): string
+    {
+        $html = "";
+
+        $html .= $this->generateSearchField();
+
+        $message = $this->getErrorsToHTML($validation);
+        $html .= $this->generateNewPostHTML($message);
+
+        $html .= $this->generatePostsHTML();
+
+        return $html;
+    }
+
+    private function getErrorsToHTML(\Model\PostValidation $validation): string
+    {
+        $html = "";
+
+        if($validation->isTitleTooShort()) {
+            $html .= $this->generateFieldTooShortHTML("Title", $validation::$minTitleLength);
+        }
+        if($validation->isContentTooShort()) {
+            $html .= $this->generateFieldTooShortHTML("Content", $validation::$minContentLength);
+        }
+        if($validation->isTitleCharactersInvalid()) {
+            $html .= $this->generateFieldInvalidCharactersHTML("Title");
+        }
+        if($validation->isContentCharactersInvalid()) {
+            $html .= $this->generateFieldInvalidCharactersHTML("Content");
+        }
+
+        return $html;
+    }
+
+    public function postErrorToHTML(): string
+    {
+        return $this->generateUnknownErrorHTML();
+    }
+
+    public function toHTML(): string
     {
         $html = "";
 
@@ -72,13 +114,13 @@ class PostView
         } else {
             $html .= $this->generateNewPostRequiredPermissionsHTML();
         }
-        $html .= $this->generatePostsHTML($this->model->getPosts());
+        $html .= $this->generatePostsHTML();
         return $html;
     }
 
     private function generateSearchField(): string
     {
-        return '
+        $html = '
 			<form method="get">
 			    <input hidden="hidden" name="guestbook"/>
 			    
@@ -88,6 +130,12 @@ class PostView
 				<input type="submit" name="' . self::$search . '" value="Search" />
 			</form>
 		';
+
+        if ($this->userHasSearched()) {
+            $html .= '<p>Found ' . count($this->model->getPosts()) . ' posts.</p>';
+        }
+
+        return $html;
     }
 
     private function generateNewPostHTML($message = ""): string
@@ -119,11 +167,11 @@ class PostView
         return "<h4>You need to be logged in to post.</h4>";
     }
 
-    private function generatePostsHTML(array $posts): string
+    private function generatePostsHTML(): string
     {
         $html = "";
 
-        foreach($posts as $post) {
+        foreach($this->model->getPosts() as $post) {
             $html .= $this->generatePostHTML($post);
         }
 

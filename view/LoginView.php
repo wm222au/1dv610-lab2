@@ -2,7 +2,7 @@
 
 namespace View;
 
-class LoginView
+class LoginView extends FormView
 {
     private $model;
     private $cookie;
@@ -125,9 +125,11 @@ class LoginView
         $message = "";
         
         if($invalidUser->isUsernameEmpty()) {
-            $message .= $this->generateUsernameIsEmptyHTML();
+            $message .= $this->generateFieldIsEmptyHTML("Username");
+
         } else if ($invalidUser->isPasswordEmpty()) {
-            $message .= $this->generatePasswordIsEmptyHTML();
+            $message .= $this->generateFieldIsEmptyHTML("Password");
+
         } else {
             $message .= $this->generateWrongCredentialsHTML();
         }
@@ -167,24 +169,9 @@ class LoginView
         return "Bye bye!";
     }
 
-    private function generateUsernameIsEmptyHTML()
-    {
-        return 'Username is missing';
-    }
-
-    private function generatePasswordIsEmptyHTML()
-    {
-        return 'Password is missing';
-    }
-
     private function generateWrongCredentialsHTML(): string
     {
         return 'Wrong name or password';
-    }
-
-    private function generateUnknownErrorHTML(): string
-    {
-        return 'An error occurred. Please try again.';
     }
 
     /**

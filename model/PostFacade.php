@@ -54,22 +54,23 @@ class PostFacade
     {
         $postList = $this->postRegistry->search($searchQuery);
 
-        foreach ($postList as $post) {
-            $postArray[] = $this->createPostObject($post);
-        }
-
-        $this->posts = $postArray;
+        $this->posts = $this->createPostArray($postList);
     }
 
     public function retrieveAllPosts()
     {
         $postList = $this->postRegistry->getAll();
 
+        $this->posts = $this->createPostArray($postList);
+    }
+
+    private function createPostArray(array $postList)
+    {
+        $postArray = array();
         foreach ($postList as $post) {
             $postArray[] = $this->createPostObject($post);
         }
-
-         $this->posts = $postArray;
+        return $postArray;
     }
 
     private function createPostObject(array $dbPost): \Model\Post

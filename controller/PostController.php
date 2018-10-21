@@ -3,6 +3,8 @@
 namespace Controller;
 
 
+use Model\PostValidationFailure;
+
 class PostController implements Controller
 {
     private $view;
@@ -18,8 +20,10 @@ class PostController implements Controller
     {
         try {
             $this->handleUserAction();
+            $this->getPostsToView();
         } catch (\Exception $e) {
-            var_dump($e);
+            $this->getPostsToView();
+            return $this->determineErrorRendering($e);
         }
 
         return $this->view->toHTML();
@@ -27,20 +31,34 @@ class PostController implements Controller
 
     private function handleUserAction()
     {
-        if($this->view->userWantsToPost()) {
+        if($this->view->userWantsToPost() && $this->model->isLoggedIn()) {
             $this->createNewPost();
         }
+    }
 
-        $this->getViewingMethod();
+    private function determineErrorRendering(\Exception $e): string
+    {
+        if ($e instanceof PostValidationFailure) {
+            return $this->view->validationErrorToHTML($e->getPostValidation());
+        } else if ($e instanceof  \DatabaseFailure){
+            // return $this->view->loginErrorToHTML($e);
+        }
+    }
+
+    private function getPostsToView()
+    {
+        try {
+            $this->getViewingMethod();
+        } catch (\Exception $e) {
+            $this->determineErrorRendering($e);
+        }
     }
 
     private function getViewingMethod()
     {
         if ($this->view->userHasSearched()) {
-            var_dump(1);
             $this->model->retrieveSearchPosts($this->view->getSearch());
         } else {
-            var_dump(2);
             $this->model->retrieveAllPosts();
         }
     }
