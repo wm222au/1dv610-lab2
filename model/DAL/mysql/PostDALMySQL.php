@@ -9,7 +9,7 @@ class PostDALMySQL extends DALMySQL
     {
         $stmt = $this->db->prepare("
             SELECT Posts.date_created, Posts.title, Posts.content, Users.username
-                    FROM Posts LEFT JOIN Users ON Posts.userId = Users.id");
+                    FROM Posts LEFT JOIN Users ON Posts.userId = Users.id ORDER BY Posts.date_updated DESC");
         $stmt->execute();
 
         $this->checkStatementForErrors($stmt->errno);
@@ -38,7 +38,7 @@ class PostDALMySQL extends DALMySQL
         $stmt = $this->db->prepare("
             SELECT Posts.date_created, Posts.title, Posts.content, Users.username
                     FROM Posts LEFT JOIN Users ON Posts.userId = Users.id 
-                    WHERE Posts.title LIKE ? OR Posts.content LIKE ?");
+                    WHERE Posts.title LIKE ? OR Posts.content LIKE ? ORDER BY Posts.date_updated DESC");
         $stmt->bind_param('ss', $searchQuery, $searchQuery);
         $stmt->execute();
 
