@@ -5,6 +5,11 @@ namespace Model\DAL;
 
 class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
 {
+    public function createTable()
+    {
+
+    }
+
     public function getByName(string $username): array
     {
         return $this->queryWithUsername($username);

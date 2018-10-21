@@ -5,6 +5,31 @@ namespace Model\DAL;
 
 class PostDALMySQL extends DALMySQL
 {
+    public function createTable()
+    {
+        $createTableQuery = "CREATE TABLE `Users` (
+  `id` int(11) NOT NULL,
+  `date_created` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `date_updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `username` varchar(50) NOT NULL,
+  `password` varchar(200) NOT NULL,
+  `token` varchar(200) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;";
+
+        $setPrimaryKeyQuery = "ALTER TABLE `Users`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);";
+
+        $setAutoIndexQuery = "ALTER TABLE `Users`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+COMMIT;";
+
+
+        $this->db->query($createTableQuery);
+        $this->db->query($setPrimaryKeyQuery);
+        $this->db->query($setAutoIndexQuery);
+    }
+
     public function getAll(): array
     {
         $stmt = $this->db->prepare("

@@ -24,9 +24,11 @@ class DatabaseFailure extends \Exception
     }
 }
 
-class DALMySQL
+abstract class DALMySQL
 {
     protected $db;
+
+    abstract public function createTable();
 
     public function __construct(\mysqli $database)
     {
