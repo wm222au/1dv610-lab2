@@ -141,7 +141,7 @@ class PostView extends FormView
 		';
 
         if ($this->userHasSearched()) {
-            $html .= '<p>Found ' . count($this->model->getPosts()) . ' posts.</p>';
+            $html .= '<p>Your search for "' . $this->getSearch() . '" found ' . count($this->model->getPosts()) . ' results.</p>';
         }
 
         return $html;

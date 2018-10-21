@@ -21,15 +21,15 @@ class PostController implements Controller
     {
         try {
             $this->handleUserAction();
-            $this->getViewingMethod();
         } catch (\Exception $exception) {
-            var_dump($exception);
+            $this->getViewingMethod();
             return $this->determineErrorRendering($exception);
         } catch (\Error $error) {
-            var_dump($error);
+            $this->getViewingMethod();
             return $this->determineErrorRendering(new \Exception());
         }
 
+        $this->getViewingMethod();
         return $this->view->toHTML();
     }
 
@@ -50,6 +50,15 @@ class PostController implements Controller
     }
 
     private function getViewingMethod()
+    {
+        try {
+            $this->retrievePosts();
+        } catch (\Exception $e) {
+            $this->determineErrorRendering($e);
+        }
+    }
+
+    private function retrievePosts()
     {
         if ($this->view->userHasSearched()) {
             $this->model->retrieveSearchPosts($this->view->getSearch());
