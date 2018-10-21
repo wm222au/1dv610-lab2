@@ -4,10 +4,10 @@ namespace Model;
 
 class Post
 {
-    private $title;
-    private $content;
-    private $creationDate;
-    private $user;
+    protected $title;
+    protected $content;
+    protected $creationDate;
+    protected $author;
 
     public function getTitle(): string
     {
@@ -39,13 +39,13 @@ class Post
         $this->creationDate = $creationDate;
     }
 
-    public function getUser(): \Model\User
+    public function getAuthor(): string
     {
-        return $this->user;
+        return $this->author;
     }
 
-    public function setUser(\Model\User $user)
+    public function setAuthor(string $author)
     {
-        $this->user = $user;
+        $this->author = $author;
     }
 }

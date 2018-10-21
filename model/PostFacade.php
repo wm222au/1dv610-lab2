@@ -9,6 +9,8 @@ class PostFacade
     private $postRegistry;
     private $userSession;
 
+    private $posts = array();
+
     public function __construct(\Model\DAL\PostDALMySQL $postRegistry, \Model\SessionHandler $userSession)
     {
         $this->postRegistry = $postRegistry;
@@ -20,45 +22,52 @@ class PostFacade
         return $this->userSession->exists();
     }
 
-    public function addPost()
+    public function getUser(): \Model\User
     {
+        $userCredentials = $this->userSession->loadEntry();
 
+        return $userCredentials->getUser();
     }
 
-    public function getAllPosts(): array
+    public function addPost(\Model\Post $post)
     {
-        $dbArray = $this->postRegistry->getAll();
+        $newPost = new \Model\PostValidation();
 
-        $postArray = array();
-//        foreach($dbArray->fetch_assoc() as $dbPost => $postValue) {
-//            var_dump($dbArray);
-//            var_dump($dbPost);
-//            var_dump($postValue);
-//            $postArray[] = $this->createPostObject($dbPost);
-//        }
+        $newPost->setTitle($post->getTitle());
+        $newPost->setContent($post->getContent());
+        $newPost->setCreationDate($post->getCreationDate());
+        $newPost->setAuthor($post->getAuthor());
 
-        while ($row = $dbArray->fetch_assoc()) {
-            $postArray[] = $this->createPostObject($row);
+        if ($newPost->isValid()) {
+            $this->postRegistry->add($post);
+        } else {
+            throw new PostValidationFailure($newPost);
         }
-//        var_dump($dbArray);
-//        while ($row = $dbArray->fetch_assoc()) {
-//            var_dump($row);
-//            $postArray[] = $this->createPostObject($row);
-//        }
+    }
 
-        return $postArray;
+    public function getPosts(): array
+    {
+        return $this->posts;
+    }
+
+    public function retrieveAllPosts()
+    {
+        $postList = $this->postRegistry->getAll();
+
+        foreach ($postList as $post) {
+            $postArray[] = $this->createPostObject($post);
+        }
+
+         $this->posts = $postArray;
     }
 
     private function createPostObject(array $dbPost): \Model\Post
     {
-        $user = new User();
-        $user->setUsername($dbPost['username']);
-
         $post = new Post();
         $post->setTitle($dbPost['title']);
         $post->setContent($dbPost['content']);
         $post->setCreationDate($dbPost['date_created']);
-        $post->setUser($user);
+        $post->setAuthor($dbPost['username']);
 
         return $post;
     }

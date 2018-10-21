@@ -30,14 +30,13 @@ require_once 'model/object/Post.php';
 require_once 'model/object/UserCredentials.php';
 
 require_once 'model/validation/UserValidation.php';
+require_once 'model/validation/PostValidation.php';
 
 require_once 'model/session/SessionHandler.php';
 
 require_once 'router.php';
 
 require_once 'helpers/AuthUtilities.php';
-require_once 'helpers/IDAL.php';
-require_once 'helpers/IDALMySQL.php';
 
 //MAKE SURE ERRORS ARE SHOWN... MIGHT WANT TO TURN THIS OFF ON A PUBLIC SERVER
 if ($_ENV['environment'] == 'development') {

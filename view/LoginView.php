@@ -197,7 +197,7 @@ class LoginView
         return '
 			<form  method="post" >
 				<p id="' . self::$messageId . '">' . $message . '</p>
-				<input type="submit" name="' . self::$logout . '" value="logout"/>
+				<input type="submit" name="' . self::$logout . '" value="Logout"/>
 			</form>
 		';
     }
@@ -224,7 +224,7 @@ class LoginView
 					<label for="' . self::$keep . '">Keep me logged in  :</label>
 					<input type="checkbox" id="' . self::$keep . '" name="' . self::$keep . '" />
 
-					<input type="submit" name="' . self::$login . '" value="login" />
+					<input type="submit" name="' . self::$login . '" value="Login" />
 				</fieldset>
 			</form>
 		';
