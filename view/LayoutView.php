@@ -2,20 +2,27 @@
 
 namespace View;
 
-class LayoutView
+use Controller\Controller;
+
+class LayoutView implements View
 {
+    private $userSession;
+    private $view;
     private $dayTimeView;
 
-    public function __construct()
+    public function __construct(\model\SessionHandler $user, Controller $view)
     {
+        $this->userSession = $user;
+        $this->view = $view;
+
         $this->dayTimeView = new DateTimeView();
     }
 
-    public function render(\model\SessionHandler $user, $view)
+    public function toHTML(): string
     {
-        $body = $view->index();
+        $body = $this->view->index();
 
-        echo '<!DOCTYPE html>
+        return '<!DOCTYPE html>
       <html lang="en">
         <head>
           <meta charset="utf-8">
@@ -23,23 +30,52 @@ class LayoutView
         </head>
         <body>
           <h1>Assignment 3</h1>
-          <ul>
-            <li><a href="./">Home</a></li>
-            <li><a href="./?guestbook">Guest book</a></li>
-          </ul>
-          ' . $this->renderIsLoggedIn($user->exists()) . '
+          ' . $this->renderIsLoggedIn($this->userSession->exists()) . '
 
           <div class="container">
+              ' . $this->routesToHTML() . '
               ' . $body . '
 
-              ' . $this->dayTimeView->show() . '
+              ' . $this->dayTimeView->toHTML() . '
           </div>
          </body>
       </html>
     ';
     }
 
-    private function renderIsLoggedIn($isLoggedIn)
+    private function routesToHTML(): string
+    {
+        $router = new \Router();
+
+        $homeUrl = $router::$homeUrl;
+        $registerUrl = $router::$registerUrl;
+        $postUrl = $router::$postUrl;
+
+        $html = "<ul>";
+        var_dump($_GET);
+
+        if (!empty($_GET)) {
+            $html .= "<li><a href=." . $homeUrl . ">Back to login</a></li>";
+        }
+        if (!array_key_exists($registerUrl, $_GET)) {
+            $html .= "<li><a href=?" . $registerUrl . ">Register a new user</a></li>";
+        }
+        if (!array_key_exists($postUrl, $_GET)) {
+            $html .= "<li><a href=?" . $postUrl . ">Guest book</a></li>";
+        }
+
+
+        $html .= "</ul>";
+
+        return $html;
+    }
+
+    private function notAtLogin(): bool
+    {
+        return !empty($_GET);
+    }
+    
+    private function renderIsLoggedIn($isLoggedIn): string
     {
         if ($isLoggedIn) {
             return "<h2>Logged in</h2>";

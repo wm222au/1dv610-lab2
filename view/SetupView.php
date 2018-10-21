@@ -3,10 +3,8 @@
 namespace View;
 
 
-class SetupView
+class SetupView implements View
 {
-    private $model;
-
     private static $setup = "SetupView:Setup";
     private static $host = "SetupView:Host";
     private static $username = "SetupView:Username";

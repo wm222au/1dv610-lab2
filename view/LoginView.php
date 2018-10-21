@@ -97,7 +97,7 @@ class LoginView extends FormView
 
     public function toHTML(): string
     {
-        $html = '<a href="?register">Register a new user</a>';
+        $html = "";
 
         if ($this->model->isLoggedIn()){
             $html .= $this->loginSuccessToHTML();

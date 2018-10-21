@@ -2,8 +2,8 @@
 
 namespace View;
 
-abstract class View
+interface View
 {
-    abstract public function toHTML($model): string;
-    abstract protected function response(): string;
+
+    public function toHTML(): string;
 }

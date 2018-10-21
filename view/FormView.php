@@ -3,7 +3,7 @@
 namespace View;
 
 
-class FormView
+abstract class FormView implements View
 {
     protected function generateFieldTooShortHTML(string $field, int $minLength): string
     {

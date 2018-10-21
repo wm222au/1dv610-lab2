@@ -2,22 +2,29 @@
 
 class Router
 {
-    private static $registerUrl = 'register';
-    private static $postUrl = 'guestbook';
-
-    private $layoutView;
     private $db;
-
     private $userSession;
 
     private $contentView;
+    private $layoutView;
 
-    public function __construct(\View\LayoutView $layoutView, mysqli $database)
+    public static $homeUrl = '/';
+    public static $registerUrl = 'register';
+    public static $postUrl = 'guestbook';
+
+    public function __construct()
     {
-        $this->layoutView = $layoutView;
-        $this->db = $database;
-
         $this->userSession = new \Model\SessionHandler("User");
+    }
+
+    public function getDatabase(): mysqli
+    {
+        return $this->db;
+    }
+
+    public function setDatabase(mysqli $database)
+    {
+        $this->db = $database;
     }
 
     public function route()
@@ -45,10 +52,12 @@ class Router
             $userRegistry = new \Model\DAL\UserDALMySQL($this->db);
 
             $model = new \Model\LoginFacade($userRegistry, $this->userSession);
-            $view = new \View\LoginView($model);
+            $view = new \View\LoginView($model, self::$registerUrl);
             $this->contentView = new \Controller\LoginController($view, $model);
         }
 
-        echo $this->layoutView->render($this->userSession, $this->contentView);
+        $this->layoutView = new \View\LayoutView($this->userSession, $this->contentView);
+
+        echo $this->layoutView->toHTML();
     }
 }

@@ -2,10 +2,10 @@
 
 namespace View;
 
-class DateTimeView
+class DateTimeView implements View
 {
 
-    public function show()
+    public function toHTML(): string
     {
         date_default_timezone_set('Europe/Stockholm');
 

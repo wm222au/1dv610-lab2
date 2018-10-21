@@ -2,7 +2,7 @@
 
 namespace Controller;
 
-class SetupController
+class SetupController implements Controller
 {
     private $view;
 
@@ -60,6 +60,8 @@ class SetupController
         foreach($dbConfig as $dbKey => $dbValue) {
             $env .= "\n\$_ENV['" . $dbKey . "'] = '" . $dbValue . "';";
         }
+
+        $env .= "\n\$_ENV['environment'] = 'production';";
 
         fwrite($file, $env) or die("Cannot write environment file");
 

@@ -49,7 +49,7 @@ class RegisterView extends FormView
 
     public function toHTML(): string
     {
-        $html = '<a href="./">Back to login</a>';
+        $html = "";
 
         if($this->model->registrationWasSuccessful()) {
             $html .= $this->registrationSuccess();
@@ -58,6 +58,11 @@ class RegisterView extends FormView
         }
 
         return $html;
+    }
+
+    private function showToLoginHTML(): string
+    {
+        return '<a href=' . parent::$homeUrl . '>Back to login</a>';
     }
 
     private function registrationSuccess(): string
