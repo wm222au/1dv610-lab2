@@ -2,9 +2,6 @@
 
 require_once 'includes.php';
 
-error_reporting(E_ALL);
-ini_set('display_errors', 'On');
-
 if (file_exists('./env.php')) {
     route();
 } else {
@@ -22,6 +19,8 @@ function setupDatabase()
 function route()
 {
     require_once 'config.php';
+    error_reporting(E_ALL);
+    ini_set('display_errors', 'On');
     $db = new mysqli($_ENV['db_serverhost'], $_ENV['db_username'], $_ENV['db_password'], $_ENV['db_database']);
 
     $router = new Router(new \View\LayoutView(), $db);

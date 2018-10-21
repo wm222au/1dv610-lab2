@@ -47,6 +47,7 @@ class LoginController implements Controller
         } else if ($e instanceof  \DatabaseFailure){
             return $this->view->loginErrorToHTML($e);
         }
+        return $this->view->toHTML();
     }
 
     private function loginViaForm()

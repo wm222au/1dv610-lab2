@@ -69,6 +69,7 @@ class SetupController
         $userRegistry = new \Model\DAL\UserDALMySQL($db);
         $postRegistry = new \Model\DAL\PostDALMySQL($db);
 
+        // It is important that the tables be created in this order because of Primary / Foreign Key relationship
         $userRegistry->createTable();
         $postRegistry->createTable();
     }

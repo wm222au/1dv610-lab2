@@ -3,6 +3,7 @@
 namespace View;
 
 
+use Model\DAL\DatabaseFailure;
 use Model\PostValidation;
 use Model\PostValidationFailure;
 
@@ -70,7 +71,7 @@ class PostView extends FormView
 
         $html .= $this->generateSearchField();
 
-        $message = $this->getErrorsToHTML($validation);
+        $message = $this->getValidationErrorsToHTML($validation);
         $html .= $this->generateNewPostHTML($message);
 
         $html .= $this->generatePostsHTML();
@@ -78,7 +79,7 @@ class PostView extends FormView
         return $html;
     }
 
-    private function getErrorsToHTML(\Model\PostValidation $validation): string
+    private function getValidationErrorsToHTML(\Model\PostValidation $validation): string
     {
         $html = "";
 
@@ -98,7 +99,20 @@ class PostView extends FormView
         return $html;
     }
 
-    public function postErrorToHTML(): string
+    public function postErrorToHTML(DatabaseFailure $e): string
+    {
+        $html = "";
+
+        $html .= $this->generateSearchField();
+
+        $html .= $this->getDatabaseErrorHTML($e);
+
+        $html .= $this->generatePostsHTML();
+
+        return $html;
+    }
+
+    private function getDatabaseErrorHTML(DatabaseFailure $e): string
     {
         return $this->generateUnknownErrorHTML();
     }
@@ -162,6 +176,11 @@ class PostView extends FormView
 		';
     }
 
+    private function generateNoPostsHTML(): string
+    {
+        return "<p>No one has posted in the guestbook yet, maybe you could be the first?</p>";
+    }
+
     private function generateNewPostRequiredPermissionsHTML(): string
     {
         return "<h4>You need to be logged in to post.</h4>";
@@ -171,8 +190,12 @@ class PostView extends FormView
     {
         $html = "";
 
-        foreach($this->model->getPosts() as $post) {
-            $html .= $this->generatePostHTML($post);
+        if (count($this->model->getPosts()) > 0) {
+            foreach($this->model->getPosts() as $post) {
+                $html .= $this->generatePostHTML($post);
+            }
+        } else {
+            $html .= $this->generateNoPostsHTML();
         }
 
         return $html;

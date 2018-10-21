@@ -41,4 +41,18 @@ abstract class DALMySQL
             throw new DatabaseFailure($errCode);
         }
     }
+
+    protected function createNewTable($query)
+    {
+        if ($this->db->multi_query($query)) {
+            do {
+                if ($result = $this->db->store_result()) {
+                    $result->free();
+                }
+            } while ($this->db->next_result());
+        }
+        if ($faultCode = $this->db->errno) {
+            throw new \Exception($this->db->error);
+        }
+    }
 }

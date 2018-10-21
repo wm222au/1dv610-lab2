@@ -3,6 +3,7 @@
 namespace Controller;
 
 
+use Model\DAL\DatabaseFailure;
 use Model\PostValidationFailure;
 
 class PostController implements Controller
@@ -20,9 +21,8 @@ class PostController implements Controller
     {
         try {
             $this->handleUserAction();
-            $this->getPostsToView();
+            $this->getViewingMethod();
         } catch (\Exception $e) {
-            $this->getPostsToView();
             return $this->determineErrorRendering($e);
         }
 
@@ -40,18 +40,11 @@ class PostController implements Controller
     {
         if ($e instanceof PostValidationFailure) {
             return $this->view->validationErrorToHTML($e->getPostValidation());
-        } else if ($e instanceof  \DatabaseFailure){
-            // return $this->view->loginErrorToHTML($e);
+        } else if ($e instanceof DatabaseFailure){
+            return $this->view->postErrorToHTML($e);
         }
-    }
 
-    private function getPostsToView()
-    {
-        try {
-            $this->getViewingMethod();
-        } catch (\Exception $e) {
-            $this->determineErrorRendering($e);
-        }
+        return $this->view->toHTML();
     }
 
     private function getViewingMethod()
