@@ -1,12 +1,5 @@
 <?php
 
-function RouterRedirect($url, $permanent = false)
-{
-    header('Location: ' . $url, true, $permanent ? 301 : 302);
-
-    exit();
-}
-
 class Router
 {
     private static $registerUrl = 'register';
@@ -31,7 +24,12 @@ class Router
     {
         if (!empty($_GET)) {
             if (isset($_GET[self::$registerUrl])) {
-                $this->contentView = new \Controller\RegisterController();
+                $userRegistry = new \Model\DAL\UserDALMySQL($this->db);
+
+                $model = new \Model\RegisterFacade($userRegistry, $this->userSession);
+                $view = new \View\RegisterView($model);
+
+                $this->contentView = new \Controller\RegisterController($view, $model);
 
             } else if(isset($_GET[self::$postUrl])) {
                 $postRegistry = new \Model\DAL\PostDALMySQL($this->db);
@@ -41,7 +39,7 @@ class Router
                 $this->contentView = new \Controller\PostController($view, $model);
 
             } else {
-                echo "404 – not found";
+                echo "404 – page not found";
             }
         } else {
             $userRegistry = new \Model\DAL\UserDALMySQL($this->db);

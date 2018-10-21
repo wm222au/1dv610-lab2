@@ -31,7 +31,7 @@ class PostFacade
 
     public function addPost(\Model\Post $post)
     {
-        $newPost = new \Model\PostValidation();
+        $newPost = new \Model\PostCredentials();
 
         $newPost->setTitle($post->getTitle());
         $newPost->setContent($post->getContent());

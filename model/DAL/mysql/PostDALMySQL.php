@@ -97,7 +97,7 @@ class PostDALMySQL extends DALMySQL
         return $postList;
     }
 
-    public function add(\Model\Post $toBeSaved)
+    public function add(\Model\PostCredentials $toBeSaved)
     {
         try {
             // Select statement for getting correct userId

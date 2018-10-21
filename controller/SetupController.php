@@ -15,6 +15,8 @@ class SetupController
     {
         try {
             $this->handleUserAction();
+            header('Location: ' . '/', true, 301);
+            exit();
         } catch (\Exception $e) {
             var_dump($e);
         }
@@ -53,10 +55,10 @@ class SetupController
     {
         $file = fopen("env.php", "w");
 
-        $env = "";
+        $env = "<?php \n";
 
         foreach($dbConfig as $dbKey => $dbValue) {
-            $env .= "\$_ENV['" . $dbKey . "'] = '" . $dbValue . "'; \n";
+            $env .= "\n\$_ENV['" . $dbKey . "'] = '" . $dbValue . "';";
         }
 
         fwrite($file, $env) or die("Cannot write environment file");

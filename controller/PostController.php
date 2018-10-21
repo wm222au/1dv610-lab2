@@ -40,11 +40,9 @@ class PostController implements Controller
     {
         if ($e instanceof PostValidationFailure) {
             return $this->view->validationErrorToHTML($e->getPostValidation());
-        } else if ($e instanceof DatabaseFailure){
+        } else {
             return $this->view->postErrorToHTML($e);
         }
-
-        return $this->view->toHTML();
     }
 
     private function getViewingMethod()

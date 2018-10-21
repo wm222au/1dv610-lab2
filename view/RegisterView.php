@@ -2,22 +2,22 @@
 
 namespace View;
 
-class RegisterView extends View
+use Model\DAL\DatabaseFailure;
+use Model\RegisterPasswordsNotEqual;
+
+class RegisterView extends FormView
 {
-    private static $register = 'RegisterView::RegisterFacade';
+    private static $register = 'RegisterView::Register';
     private static $name = 'RegisterView::UserName';
     private static $password = 'RegisterView::Password';
     private static $passwordRepeat = 'RegisterView::PasswordRepeat';
-    private static $cookieName = 'RegisterView::CookieName';
-    private static $cookiePassword = 'RegisterView::CookiePassword';
     private static $messageId = 'RegisterView::Message';
 
     private $model;
-    private $user;
 
-    public function __construct()
+    public function __construct(\Model\RegisterFacade $toBeViewed)
     {
-        // $this->user = $toBeViewed;
+        $this->model = $toBeViewed;
     }
 
     public function userWillRegister(): bool
@@ -25,25 +25,20 @@ class RegisterView extends View
         return ($this->getUsername() !== null && $this->getPassword() !== null && $this->getPasswordRepeat() !== null);
     }
 
-    public function getRegistration(): \Model\RegisterFacade
+    public function getUserObject(): \Model\User
     {
-        $user = new \Model\User($this->getUsername(), $this->getPassword());
-        $register = new \Model\RegisterFacade($user, $this->getPasswordRepeat());
-        return $register;
+        $user = new \Model\User();
+        $user->setUsername($this->getUsername());
+        $user->setPassword($this->getPassword());
+        return $user;
     }
 
-    public function getUserLogin(): \Model\LoginFacade
-    {
-        $user = new \Model\User($this->getUsername(), $this->getPassword());
-        $login = new \Model\LoginFacade($user);
-        return $login;
-    }
-
-    public function getUsername()
+    private function getUsername()
     {
         return $_POST[self::$name];
     }
-    public function getPassword()
+
+    private function getPassword()
     {
         return $_POST[self::$password];
     }
@@ -52,53 +47,58 @@ class RegisterView extends View
         return $_POST[self::$passwordRepeat];
     }
 
-    public function toHTML($model): string
+    public function toHTML(): string
     {
-        $this->model = $model;
         $html = '<a href="./">Back to login</a>';
-        $message = '';
 
-        if ($this->model) {
-            $message .= $this->response();
+        if($this->model->registrationWasSuccessful()) {
+            $html .= $this->registrationSuccess();
+        } else {
+            $html .= $this->generateRegisterFormHTML("");
         }
-
-        $html .= $this->generateRegisterFormHTML($message);
 
         return $html;
     }
 
-    /**
-     * Create HTTP response
-     *
-     * Should be called after a login attempt has been determined
-     *
-     * @return  void BUT writes to standard output and cookies!
-     */
-    protected function response(): string
+    private function registrationSuccess(): string
     {
-        $response = '';
+        $message = $this->generateUserRegistered();
+        return $this->generateRegisterFormHTML($message);
+    }
 
-        if ($this->model->getUserRegistration()) {
-            $response .= $this->generateUserRegistered();
-        } else if ($this->model->getUserExists()) {
-            $response .= $this->generateUserExists();
-        } else {
-            if (!$this->model->getUsernameLengthValid()) {
-                $response .= $this->generateUsernameTooShort();
-            }
-            if (!$this->model->getPasswordLengthValid()) {
-                $response .= $this->generatePasswordTooShort();
-            }
-            if (!$this->model->getPasswordsEqual()) {
-                $response .= $this->generatePasswordNotEqual();
-            }
-            if (!$this->model->getUsernameCharsAreValid()) {
-                $_POST[self::$name] = strip_tags($_POST[self::$name]);
-                $response .= $this->generateInvalidUsernameChars();
+    public function validationErrorToHTML(\Model\UserCredentials $invalidUser): string
+    {
+        $message = "";
+
+        if($invalidUser->isUsernameTooShort()) {
+            $message .= $this->generateFieldTooShortHTML("Username", $invalidUser::$minUsernameLength);
+
+        }
+        if ($invalidUser->isPasswordTooShort()) {
+            $message .= $this->generateFieldTooShortHTML("Password", $invalidUser::$minPasswordLength);
+        }
+        if ($invalidUser->isUsernameCharactersInvalid()){
+            $message .= $this->generateFieldInvalidCharactersHTML("Username");
+        }
+
+        return $this->generateRegisterFormHTML($message);
+    }
+
+    public function registrationErrorToHTML(\Exception $e): string
+    {
+        $message = "";
+
+        if ($e instanceof DatabaseFailure) {
+            if ($e->isDuplicate()) {
+                $message .= $this->generateUserExists();
+            } else if ($e instanceof RegisterPasswordsNotEqual) {
+                $message .= $this->generatePasswordsNotEqual();
+            } else {
+                $message .= $this->generateUnknownErrorHTML();
             }
         }
 
-        return $response;
+        return $this->generateRegisterFormHTML($message);
     }
 
     private function generateUserRegistered()
@@ -106,27 +106,12 @@ class RegisterView extends View
         return 'Registered new user. ';
     }
 
-    private function generateInvalidUsernameChars()
-    {
-        return 'Username contains invalid characters.';
-    }
-
     private function generateUserExists()
     {
         return 'User exists, pick another username. ';
     }
 
-    private function generateUsernameTooShort()
-    {
-        return 'Username has too few characters, at least ' . $this->model->getMinUsernameLength() . ' characters. ';
-    }
-
-    private function generatePasswordTooShort()
-    {
-        return 'Password has too few characters, at least ' . $this->model->getMinPasswordLength() . ' characters. ';
-    }
-
-    private function generatePasswordNotEqual()
+    private function generatePasswordsNotEqual()
     {
         return 'Passwords do not match. ';
     }
@@ -142,7 +127,7 @@ class RegisterView extends View
         return '
 			<form method="post" >
 				<fieldset>
-					<legend>RegisterFacade a new user - Write username and password</legend>
+					<legend>Register a new user - Write username and password</legend>
 					<p id="' . self::$messageId . '">' . $message . '</p>
 
           <p>
@@ -156,7 +141,7 @@ class RegisterView extends View
 					<label for="' . self::$passwordRepeat . '">Repeat Password :</label>
 					<input type="password" id="' . self::$passwordRepeat . '" name="' . self::$passwordRepeat . '" value="' . $this->getPasswordRepeat() . '" />
 
-          <input type="submit" name="' . self::$register . '" value="RegisterFacade" />
+          <input type="submit" name="' . self::$register . '" value="Register" />
 				</fieldset>
 			</form>
 		';

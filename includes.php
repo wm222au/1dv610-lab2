@@ -19,6 +19,7 @@ require_once 'controller/RegisterController.php';
 require_once 'controller/PostController.php';
 
 require_once 'model/LoginFacade.php';
+require_once 'model/RegisterFacade.php';
 require_once 'model/PostFacade.php';
 
 require_once 'model/DAL/IUserDAL.php';

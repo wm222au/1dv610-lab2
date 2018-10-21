@@ -47,10 +47,9 @@ class LoginController implements Controller
     {
         if ($e instanceof UserValidationFailure) {
             return $this->view->validationErrorToHTML($e->getUserValidation());
-        } else if ($e instanceof  DatabaseFailure){
+        } else {
             return $this->view->loginErrorToHTML($e);
         }
-        return $this->view->toHTML();
     }
 
     private function loginViaForm()
@@ -58,7 +57,8 @@ class LoginController implements Controller
         $user = $this->view->getUserObject();
 
         $userCredentials = new \Model\UserCredentials();
-        $userCredentials->setUser($user);
+        $userCredentials->setUsername($user->getUsername());
+        $userCredentials->setPassword($user->getPassword());
         $userCredentials->setToken(AuthUtilities::randomString());
 
         $this->model->loginWithUserThrowsOnFail($userCredentials);

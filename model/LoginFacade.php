@@ -34,7 +34,7 @@ class LoginFacade
     {
         $user = $toBeLoggedIn->getUser();
 
-        $userLogin = new \Model\UserValidation();
+        $userLogin = new \Model\UserCredentials();
         $userLogin->setUsername($user->getUsername());
         $userLogin->setPassword($user->getPassword());
 

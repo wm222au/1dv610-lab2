@@ -1,31 +1,23 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: william
- * Date: 2018-10-19
- * Time: 19:32
- */
 
 namespace Model;
 
-use Throwable;
-
 class PostValidationFailure extends \Exception
 {
-    public function __construct(\Model\PostValidation $validation, string $message = "Post creation failed")
+    public function __construct(\Model\PostCredentials $validation, string $message = "Post creation failed")
     {
         parent::__construct($message, 0, null);
         $this->validation = $validation;
     }
 
-    public function getPostValidation(): \Model\PostValidation
+    public function getPostValidation(): \Model\PostCredentials
     {
         return $this->validation;
     }
 }
 
 
-class PostValidation extends Post
+class PostCredentials extends Post
 {
     public static $minTitleLength = 5;
     public static $minContentLength= 30;
@@ -52,7 +44,6 @@ class PostValidation extends Post
 
     public function isValid(): bool
     {
-        // If all validations pass, user is valid
         if(
             !$this->isTitleTooShort() &&
             !$this->isContentTooShort() &&

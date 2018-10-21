@@ -2,10 +2,27 @@
 
 namespace Model;
 
-class UserCredentials
+class UserValidationFailure extends \Exception
 {
-    private $token;
-    private $user;
+    private $validation;
+
+    public function __construct(\Model\UserCredentials $validation, string $message = "User creation failed")
+    {
+        parent::__construct($message, 0, null);
+        $this->validation = $validation;
+    }
+
+    public function getUserValidation(): \Model\UserCredentials
+    {
+        return $this->validation;
+    }
+}
+
+class UserCredentials extends User
+{
+
+    public static $minUsernameLength = 3;
+    public static $minPasswordLength = 6;
 
     public function getToken(): string
     {
@@ -17,14 +34,44 @@ class UserCredentials
         $this->token = $token;
     }
 
-    public function getUser(): \Model\User
+    public function isUsernameEmpty(): bool
     {
-        return $this->user;
+        return empty($this->username);
     }
 
-    public function setUser(\Model\User $user)
+    public function isPasswordEmpty(): bool
     {
-        $this->user = $user;
+        return empty($this->password);
+    }
+
+    public function isUsernameTooShort(): bool
+    {
+        return strlen($this->username) < self::$minUsernameLength;
+    }
+
+    public function isPasswordTooShort(): bool
+    {
+        return strlen($this->password) < self::$minPasswordLength;
+    }
+
+    public function isUsernameCharactersInvalid(): bool
+    {
+        return strip_tags($this->username) != $this->username;
+    }
+
+    public function isValid(): bool
+    {
+        if(
+            !$this->isUsernameEmpty() &&
+            !$this->isPasswordEmpty() &&
+            !$this->isUsernameTooShort() &&
+            !$this->isPasswordTooShort() &&
+            !$this->isUsernameCharactersInvalid()
+        ) {
+            return true;
+        }
+
+        return false;
     }
 
 

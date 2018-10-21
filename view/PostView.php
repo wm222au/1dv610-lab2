@@ -112,7 +112,7 @@ class PostView extends FormView
         return $html;
     }
 
-    private function getDatabaseErrorHTML(DatabaseFailure $e): string
+    private function getDatabaseErrorHTML(\Exception $e): string
     {
         return $this->generateUnknownErrorHTML();
     }

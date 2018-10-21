@@ -41,7 +41,7 @@ class LoginView extends FormView
 
     public function getUserObject(): \Model\User
     {
-        $user = new \Model\User($this->getUsername(), $this->getPassword());
+        $user = new \Model\User();
         $user->setUsername($this->getUsername());
         $user->setPassword($this->getPassword());
         return $user;
@@ -122,7 +122,7 @@ class LoginView extends FormView
         return $html;
     }
 
-    public function validationErrorToHTML(\Model\UserValidation $invalidUser): string
+    public function validationErrorToHTML(\Model\UserCredentials $invalidUser): string
     {
         $message = "";
         
@@ -141,14 +141,16 @@ class LoginView extends FormView
         return $html;
     }
 
-    public function loginErrorToHTML(DatabaseFailure $e): string
+    public function loginErrorToHTML(\Exception $e): string
     {
         $message = "";
 
-        if ($e->noResults()) {
-            $message .= $this->generateWrongCredentialsHTML();
-        } else {
-            $message .= $this->generateUnknownErrorHTML();
+        if ($e instanceof DatabaseFailure) {
+            if ($e->noResults()) {
+                $message .= $this->generateWrongCredentialsHTML();
+            } else {
+                $message .= $this->generateUnknownErrorHTML();
+            }
         }
 
         $html = $this->generateLoginFormHTML($message);
