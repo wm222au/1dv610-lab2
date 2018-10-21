@@ -17,7 +17,7 @@ class PostDALMySQL extends DALMySQL
         $result = $stmt->get_result();
 
         if ($result->num_rows === 0) {
-            throw new \DatabaseFailure(-1);
+            throw new DatabaseFailure(-1);
         }
 
         $stmt->close();
@@ -31,11 +31,15 @@ class PostDALMySQL extends DALMySQL
         return $postList;
     }
 
-    public function search(): array
+    public function search(string $search): array
     {
+        $searchQuery = "%" . $search . "%";
+
         $stmt = $this->db->prepare("
             SELECT Posts.date_created, Posts.title, Posts.content, Users.username
-                    FROM Posts LEFT JOIN Users ON Posts.userId = Users.id");
+                    FROM Posts LEFT JOIN Users ON Posts.userId = Users.id 
+                    WHERE Posts.title LIKE ? OR Posts.content LIKE ?");
+        $stmt->bind_param('ss', $searchQuery, $searchQuery);
         $stmt->execute();
 
         $this->checkStatementForErrors($stmt->errno);
@@ -43,7 +47,7 @@ class PostDALMySQL extends DALMySQL
         $result = $stmt->get_result();
 
         if ($result->num_rows === 0) {
-            throw new \DatabaseFailure(-1);
+            throw new DatabaseFailure(-1);
         }
 
         $stmt->close();
@@ -61,13 +65,17 @@ class PostDALMySQL extends DALMySQL
     {
         try {
             // Select statement for getting correct userId
+            $userRegistry = new UserDALMySQL($this->db);
+
+            $user = $userRegistry->getByName($toBeSaved->getAuthor());
+
             $stmt = $this->db->prepare("INSERT INTO Posts (title, content, userId) 
             VALUES 
-            (?, ?, SELECT id FROM Users WHERE username = ?)");
+            (?, ?, ?)");
             $stmt->bind_param("sss",
                 $toBeSaved->getTitle(),
                 $toBeSaved->getContent(),
-                $toBeSaved->getAuthor()
+                $user['id']
             );
             $stmt->execute();
 

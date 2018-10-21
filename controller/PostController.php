@@ -22,8 +22,6 @@ class PostController implements Controller
             var_dump($e);
         }
 
-        $this->model->retrieveAllPosts();
-
         return $this->view->toHTML();
     }
 
@@ -31,8 +29,19 @@ class PostController implements Controller
     {
         if($this->view->userWantsToPost()) {
             $this->createNewPost();
-            // TODO add user search
+        }
+
+        $this->getViewingMethod();
+    }
+
+    private function getViewingMethod()
+    {
+        if ($this->view->userHasSearched()) {
+            var_dump(1);
+            $this->model->retrieveSearchPosts($this->view->getSearch());
         } else {
+            var_dump(2);
+            $this->model->retrieveAllPosts();
         }
     }
 

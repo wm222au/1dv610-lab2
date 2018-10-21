@@ -21,6 +21,16 @@ class PostView
         $this->model = $toBeViewed;
     }
 
+    public function userHasSearched(): bool
+    {
+        return !empty($this->getSearch());
+    }
+
+    public function getSearch()
+    {
+        return $_GET[self::$searchString] ? $_GET[self::$searchString] : "";
+    }
+
     public function userWantsToPost()
     {
         return $this->getTitle() !== null && $this->getContent() !== null;
@@ -49,11 +59,6 @@ class PostView
     private function getContent()
     {
         return $_POST[self::$content];
-    }
-
-    private function getSearch()
-    {
-        return $_GET[self::$searchString] ? $_GET[self::$searchString] : "";
     }
 
     public function toHTML()

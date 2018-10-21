@@ -50,6 +50,17 @@ class PostFacade
         return $this->posts;
     }
 
+    public function retrieveSearchPosts(string $searchQuery)
+    {
+        $postList = $this->postRegistry->search($searchQuery);
+
+        foreach ($postList as $post) {
+            $postArray[] = $this->createPostObject($post);
+        }
+
+        $this->posts = $postArray;
+    }
+
     public function retrieveAllPosts()
     {
         $postList = $this->postRegistry->getAll();

@@ -5,6 +5,11 @@ namespace Model\DAL;
 
 class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
 {
+    public function getByName(string $username): array
+    {
+        return $this->queryWithUsername($username);
+    }
+
     public function getById(string $id): array
     {
         $stmt = $this->db->prepare("SELECT * FROM Users WHERE id = ? LIMIT 1");
