@@ -3,6 +3,7 @@
 namespace View;
 
 use Model\DAL\DatabaseFailure;
+use Model\WrongLoginCredentials;
 
 class LoginView extends FormView
 {
@@ -145,12 +146,10 @@ class LoginView extends FormView
     {
         $message = "";
 
-        if ($e instanceof DatabaseFailure) {
-            if ($e->noResults()) {
-                $message .= $this->generateWrongCredentialsHTML();
-            } else {
-                $message .= $this->generateUnknownErrorHTML();
-            }
+        if ($e instanceof WrongLoginCredentials) {
+            $message .= $this->generateWrongCredentialsHTML();
+        } else {
+            $message .= $this->generateUnknownErrorHTML();
         }
 
         $html = $this->generateLoginFormHTML($message);

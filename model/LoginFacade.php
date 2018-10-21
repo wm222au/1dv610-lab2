@@ -2,6 +2,8 @@
 
 namespace Model;
 
+class WrongLoginCredentials extends \Exception {}
+
 class LoginFacade
 {
     private $userRegistry;
@@ -54,6 +56,8 @@ class LoginFacade
         if($this->userRegistry->compareUser($toBeLoggedIn)) {
             $this->userRegistry->updateToken($toBeLoggedIn);
             $this->userSession->saveEntry($toBeLoggedIn);
+        } else {
+            throw new WrongLoginCredentials();
         }
     }
 }

@@ -13,6 +13,8 @@ class LayoutView
 
     public function render(\model\SessionHandler $user, $view)
     {
+        $body = $view->index();
+
         echo '<!DOCTYPE html>
       <html lang="en">
         <head>
@@ -28,7 +30,7 @@ class LayoutView
           ' . $this->renderIsLoggedIn($user->exists()) . '
 
           <div class="container">
-              ' . $view->index() . '
+              ' . $body . '
 
               ' . $this->dayTimeView->show() . '
           </div>

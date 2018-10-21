@@ -15,10 +15,8 @@ class SetupController
     {
         try {
             $this->handleUserAction();
-            header('Location: ' . '/', true, 301);
-            exit();
         } catch (\Exception $e) {
-            var_dump($e);
+            $this->view->errorToHTML();
         }
 
         return $this->view->toHTML();
@@ -28,6 +26,8 @@ class SetupController
     {
         if ($this->view->userWantsToConnectDB()) {
             $this->createDatabaseSetup();
+            header('Location: ' . './', true, 301);
+            exit();
         }
     }
 

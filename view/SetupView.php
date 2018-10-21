@@ -12,6 +12,7 @@ class SetupView
     private static $username = "SetupView:Username";
     private static $password = "SetupView:Password";
     private static $database = "SetupView:Database";
+    private static $messageId = 'SetupView::Message';
 
     public function __construct()
     {
@@ -66,12 +67,23 @@ class SetupView
         return $html;
     }
 
+    public function errorToHTML(): string
+    {
+        $html = "";
+
+        $html .= $this->generateDatabaseSetupHTML("An error occurred when setting up the database with the given parameters");
+
+        return $html;
+    }
+
     private function generateDatabaseSetupHTML($message = ""): string
     {
         return '
 			<form method="post">
 			    <fieldset>
 					<legend>Setup database</legend>
+					
+					<p id="' . self::$messageId . '">' . $message . '</p>
 
                     <p>
 					<h4>Host (IP / URL)</h4>
