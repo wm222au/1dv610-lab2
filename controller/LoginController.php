@@ -24,7 +24,7 @@ class LoginController implements Controller
         } catch(\Exception $exception) {
             return $this->determineErrorRendering($exception);
         } catch (\Error $error) {
-            return $this->determineErrorRendering(new DatabaseFailure(-1));
+            return $this->determineErrorRendering(new \Exception());
         }
 
         return $this->view->toHTML();

@@ -37,11 +37,10 @@ class PostDALMySQL extends DALMySQL
     {
         $postList = array();
 
-        $stmt = $this->db->prepare("
+        try {
+            $stmt = $this->db->prepare("
             SELECT Posts.date_created, Posts.title, Posts.content, Users.username
                     FROM Posts LEFT JOIN Users ON Posts.userId = Users.id ORDER BY Posts.date_updated DESC");
-        if($stmt) {
-            throw new DatabaseFailure(-1);
 
             $stmt->execute();
 
@@ -49,17 +48,14 @@ class PostDALMySQL extends DALMySQL
 
             $result = $stmt->get_result();
 
-            if ($result->num_rows === 0) {
-                throw new DatabaseFailure(-1);
-            }
-
             $stmt->close();
 
             while ($row = $result->fetch_assoc()) {
                 $postList[] = $row;
             }
+        } catch (\Exception $e) {
+            error_log($e);
         }
-
         return $postList;
     }
 
@@ -69,29 +65,28 @@ class PostDALMySQL extends DALMySQL
 
         $searchQuery = "%" . $search . "%";
 
-        $stmt = $this->db->prepare("
+        try {
+            $stmt = $this->db->prepare("
             SELECT Posts.date_created, Posts.title, Posts.content, Users.username
                     FROM Posts LEFT JOIN Users ON Posts.userId = Users.id 
                     WHERE Posts.title LIKE ? OR Posts.content LIKE ? ORDER BY Posts.date_updated DESC");
-        if($stmt) {
-            $stmt->bind_param('ss', $searchQuery, $searchQuery);
-            $stmt->execute();
 
-            $this->checkStatementForErrors($stmt->errno);
+                $stmt->bind_param('ss', $searchQuery, $searchQuery);
+                $stmt->execute();
 
-            $result = $stmt->get_result();
+                $this->checkStatementForErrors($stmt->errno);
 
-            if ($result->num_rows === 0) {
-                throw new DatabaseFailure(-1);
-            }
+                $result = $stmt->get_result();
 
-            $stmt->close();
+                $stmt->close();
 
-            $postList = array();
+                $postList = array();
 
-            while ($row = $result->fetch_assoc()) {
-                $postList[] = $row;
-            }
+                while ($row = $result->fetch_assoc()) {
+                    $postList[] = $row;
+                }
+        } catch (\Exception $e) {
+            error_log($e);
         }
 
         return $postList;
@@ -120,7 +115,7 @@ class PostDALMySQL extends DALMySQL
             $stmt->close();
 
         } catch (Exception $e) {
-            throw new DatabaseFailure(0);
+            throw $e;
         }
     }
 }

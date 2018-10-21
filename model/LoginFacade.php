@@ -32,16 +32,10 @@ class LoginFacade
 
     public function loginWithUserThrowsOnFail(\Model\UserCredentials $toBeLoggedIn)
     {
-        $user = $toBeLoggedIn->getUser();
-
-        $userLogin = new \Model\UserCredentials();
-        $userLogin->setUsername($user->getUsername());
-        $userLogin->setPassword($user->getPassword());
-
-        if($userLogin->isValid()) {
+        if($toBeLoggedIn->isValid()) {
             $this->tryToLoginWithUser($toBeLoggedIn);
         } else {
-            throw new UserValidationFailure($userLogin);
+            throw new UserValidationFailure($toBeLoggedIn);
         }
     }
 

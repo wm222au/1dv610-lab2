@@ -26,22 +26,15 @@ class PostFacade
     {
         $userCredentials = $this->userSession->loadEntry();
 
-        return $userCredentials->getUser();
+        return $userCredentials;
     }
 
-    public function addPost(\Model\Post $post)
+    public function addPost(\Model\PostCredentials $postCredentials)
     {
-        $newPost = new \Model\PostCredentials();
-
-        $newPost->setTitle($post->getTitle());
-        $newPost->setContent($post->getContent());
-        $newPost->setCreationDate($post->getCreationDate());
-        $newPost->setAuthor($post->getAuthor());
-
-        if ($newPost->isValid()) {
-            $this->postRegistry->add($post);
+        if ($postCredentials->isValid()) {
+            $this->postRegistry->add($postCredentials);
         } else {
-            throw new PostValidationFailure($newPost);
+            throw new PostValidationFailure($postCredentials);
         }
     }
 

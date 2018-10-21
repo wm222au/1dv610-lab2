@@ -37,21 +37,23 @@ class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
 
     public function getById(string $id): array
     {
-        $stmt = $this->db->prepare("SELECT * FROM Users WHERE id = ? LIMIT 1");
-        $stmt->bind_param("s", $id);
-        $stmt->execute();
+        try {
+            $stmt = $this->db->prepare("SELECT * FROM Users WHERE id = ? LIMIT 1");
+            $stmt->bind_param("s", $id);
+            $stmt->execute();
 
-        $this->checkStatementForErrors($stmt->errno);
+            $this->checkStatementForErrors($stmt->errno);
 
-        $result = $stmt->get_result();
+            $result = $stmt->get_result();
 
-        if ($result->num_rows === 0) {
-            throw new \DatabaseFailure(-1);
+            if ($result->num_rows === 0) {
+                throw new \DatabaseFailure(-1);
+            }
+
+            $stmt->close();
+        } catch (\Exception $e) {
+            throw $e;
         }
-
-        $stmt->close();
-
-        return $result->fetch_assoc();
     }
 
     public function add(\Model\UserCredentials $userCredentials)
@@ -69,21 +71,19 @@ class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
 
             $stmt->close();
         } catch (Exception $e) {
-            throw new \Exception(0);
+            throw $e;
         }
     }
 
     public function compareUser(\Model\UserCredentials $userCredentials): bool
     {
         try {
-            $user = $userCredentials->getUser();
+            $dbUser = $this->queryWithUsername($userCredentials->getUsername());
 
-            $dbUser = $this->queryWithUsername($user->getUsername());
-
-            return password_verify($user->getPassword(), $dbUser['password']);
+            return password_verify($userCredentials->getPassword(), $dbUser['password']);
 
         } catch (Exception $e) {
-            throw new \DatabaseFailure(0);
+            throw $e;
         }
     }
 
@@ -92,15 +92,14 @@ class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
         try {
             return !empty($this->queryWithToken($token));
         } catch (Exception $e) {
-            throw new \DatabaseFailure(0);
+            throw $e;
         }
     }
 
     public function updateToken(\Model\UserCredentials $userCredentials)
     {
         $token = $userCredentials->getToken();
-        $user = $userCredentials->getUser();
-        $username = $user->getUsername();
+        $username = $userCredentials->getUsername();
 
         try {
             $stmt = $this->db->prepare("UPDATE Users SET token=? WHERE username=?");
@@ -111,7 +110,7 @@ class UserDALMySQL extends DALMySQL implements \Model\DAL\IUserDAL
 
             $stmt->close();
         } catch (Exception $e) {
-            throw new \Exception(0);
+            throw $e;
         }
     }
 

@@ -31,9 +31,7 @@ require_once 'model/DAL/mysql/PostDALMySQL.php';
 require_once 'model/object/User.php';
 require_once 'model/object/Post.php';
 require_once 'model/object/UserCredentials.php';
-
-require_once 'model/validation/UserValidation.php';
-require_once 'model/validation/PostValidation.php';
+require_once 'model/object/PostCredentials.php';
 
 require_once 'model/session/SessionHandler.php';
 

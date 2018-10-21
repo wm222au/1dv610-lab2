@@ -22,8 +22,12 @@ class PostController implements Controller
         try {
             $this->handleUserAction();
             $this->getViewingMethod();
-        } catch (\Exception $e) {
-            return $this->determineErrorRendering($e);
+        } catch (\Exception $exception) {
+            var_dump($exception);
+            return $this->determineErrorRendering($exception);
+        } catch (\Error $error) {
+            var_dump($error);
+            return $this->determineErrorRendering(new \Exception());
         }
 
         return $this->view->toHTML();
@@ -58,6 +62,13 @@ class PostController implements Controller
     {
         $post = $this->view->getPost();
 
-        $this->model->addPost($post);
+        $newPost = new \Model\PostCredentials();
+
+        $newPost->setTitle($post->getTitle());
+        $newPost->setContent($post->getContent());
+        $newPost->setCreationDate($post->getCreationDate());
+        $newPost->setAuthor($post->getAuthor());
+
+        $this->model->addPost($newPost);
     }
 }

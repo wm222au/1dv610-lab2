@@ -91,11 +91,11 @@ class RegisterView extends FormView
         if ($e instanceof DatabaseFailure) {
             if ($e->isDuplicate()) {
                 $message .= $this->generateUserExists();
-            } else if ($e instanceof RegisterPasswordsNotEqual) {
-                $message .= $this->generatePasswordsNotEqual();
-            } else {
-                $message .= $this->generateUnknownErrorHTML();
             }
+        } else if ($e instanceof RegisterPasswordsNotEqual) {
+            $message .= $this->generatePasswordsNotEqual();
+        } else {
+            $message .= $this->generateUnknownErrorHTML();
         }
 
         return $this->generateRegisterFormHTML($message);

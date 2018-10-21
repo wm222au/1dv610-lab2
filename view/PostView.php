@@ -45,12 +45,12 @@ class PostView extends FormView
         $post = new \Model\Post();
 
         $timestamp = date('Y-m-d G:i:s');
-        $user = $this->model->getUser();
+        $userCredentials = $this->model->getUser();
 
         $post->setTitle($this->getTitle());
         $post->setContent($this->getContent());
         $post->setCreationDate($timestamp);
-        $post->setAuthor($user->getUsername());
+        $post->setAuthor($userCredentials->getUsername());
 
         return $post;
     }
@@ -65,7 +65,7 @@ class PostView extends FormView
         return $_POST[self::$content];
     }
 
-    public function validationErrorToHTML(\Model\PostValidation $validation): string
+    public function validationErrorToHTML(\Model\PostCredentials $validation): string
     {
         $html = "";
 
@@ -79,7 +79,7 @@ class PostView extends FormView
         return $html;
     }
 
-    private function getValidationErrorsToHTML(\Model\PostValidation $validation): string
+    private function getValidationErrorsToHTML(\Model\PostCredentials $validation): string
     {
         $html = "";
 
@@ -99,22 +99,17 @@ class PostView extends FormView
         return $html;
     }
 
-    public function postErrorToHTML(DatabaseFailure $e): string
+    public function postErrorToHTML(\Exception $e): string
     {
         $html = "";
 
         $html .= $this->generateSearchField();
 
-        $html .= $this->getDatabaseErrorHTML($e);
+        $html .= $this->generateUnknownErrorHTML();
 
         $html .= $this->generatePostsHTML();
 
         return $html;
-    }
-
-    private function getDatabaseErrorHTML(\Exception $e): string
-    {
-        return $this->generateUnknownErrorHTML();
     }
 
     public function toHTML(): string
